@@ -8,7 +8,7 @@ const Map = ({ map, player, height, width }) => {
   return (
     <div className="gameMap" style={{ height: `${height}px`, width: `${width}px` }}>
       {map.reduce((result, row, index) => {
-        if (index >= mapReduce.startRowIndex && index <= mapReduce.endRowIndex) {
+        if (index >= mapReduce.startRowIndex && index < mapReduce.endRowIndex) {
           if (player.row === index) {
             result.push(<Row row={row} mapReduce={mapReduce} player={player} />);
           } else {
@@ -34,7 +34,7 @@ Map.propTypes = {
 const Row = ({ row, player, mapReduce }) =>
   <div className="gameRow">
     {row.reduce((result, col, index) => {
-      if (index > mapReduce.startColIndex && index < mapReduce.endColIndex) {
+      if (index >= mapReduce.startColIndex && index < mapReduce.endColIndex) {
         if (player && player.col === index) {
           result.push(<Tile col={col} player={player} />);
         } else {
