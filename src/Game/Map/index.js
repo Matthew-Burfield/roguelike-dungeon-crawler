@@ -103,7 +103,10 @@ const Row = ({ row, player, mapReduce }) => {
 
 
 Row.propTypes = {
-  row: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  row: React.PropTypes.arrayOf(React.PropTypes.shape({
+    name: React.PropTypes.string.isRequired,
+    image: React.PropTypes.string.isRequired,
+  })).isRequired,
   mapReduce: React.PropTypes.shape({
     startRowIndex: React.PropTypes.number.isRequired,
     endRowIndex: React.PropTypes.number.isRequired,
