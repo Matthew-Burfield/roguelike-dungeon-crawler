@@ -1,69 +1,9 @@
 import React from 'react';
 import Tile from './Tile';
+import { tileHeight } from '../../utility';
 
-const Map = ({ map, player, height, width }) => {
 
-  const mapReduce = getVisibleTiles(map, height, width, player.row, player.col);
-
-  return (
-    <div className="gameMap" style={{ height: `${height}px`, width: `${width}px` }}>
-      {map.reduce((result, row, index) => {
-        if (index >= mapReduce.startRowIndex && index < mapReduce.endRowIndex) {
-          if (player.row === index) {
-            result.push(<Row row={row} mapReduce={mapReduce} player={player} />);
-          } else {
-            result.push(<Row row={row} mapReduce={mapReduce} />);
-          }
-        }
-        return result;
-      }, [])}
-    </div>
-  );
-};
-
-Map.propTypes = {
-  map: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
-  height: React.PropTypes.number.isRequired,
-  width: React.PropTypes.number.isRequired,
-  player: React.PropTypes.shape({
-    row: React.PropTypes.number.isRequired,
-    col: React.PropTypes.number.isRequired,
-  }).isRequired,
-};
-
-const Row = ({ row, player, mapReduce }) =>
-  <div className="gameRow">
-    {row.reduce((result, col, index) => {
-      if (index >= mapReduce.startColIndex && index < mapReduce.endColIndex) {
-        if (player && player.col === index) {
-          result.push(<Tile col={col} player={player} />);
-        } else {
-          result.push(<Tile col={col} />);
-        }
-      }
-      return result;
-    }, [])}
-  </div>;
-
-Row.propTypes = {
-  row: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
-  mapReduce: React.PropTypes.shape({
-    startRowIndex: React.PropTypes.number.isRequired,
-    endRowIndex: React.PropTypes.number.isRequired,
-    startColIndex: React.PropTypes.number.isRequired,
-    endColIndex: React.PropTypes.number.isRequired,
-  }).isRequired,
-  player: React.PropTypes.shape({
-    row: React.PropTypes.number.isRequired,
-    col: React.PropTypes.number.isRequired,
-  }),
-};
-
-Row.defaultProps = {
-  player: undefined,
-};
-
-function getVisibleTiles(map, height, width, playerY, playerX) {
+const getVisibleTiles = (map, height, width, playerY, playerX) => {
   // We don't want to display everything to the screen.
   // Only the tiles that are going to fit inside the container (width and height)
   const halfRowsOnScreen = Math.floor((height / 30) / 2);
@@ -103,6 +43,83 @@ function getVisibleTiles(map, height, width, playerY, playerX) {
     endColIndex: startColIndex >= 0 ?
                   endColIndex : endColIndex + Math.abs(startColIndex),
   };
-}
+};
+
+
+const Map = ({ map, player, height, width }) => {
+  const mapReduce = getVisibleTiles(map, height, width, player.row, player.col);
+  let incrementer = 0;
+
+
+  return (
+    <div className="gameMap" style={{ height: `${height}px`, width: `${width}px` }}>
+      {map.reduce((result, row, index) => {
+        if (index >= mapReduce.startRowIndex && index < mapReduce.endRowIndex) {
+          if (player.row === index) {
+            result.push(<Row key={incrementer} row={row} mapReduce={mapReduce} player={player} />);
+          } else {
+            result.push(<Row key={incrementer} row={row} mapReduce={mapReduce} />);
+          }
+          incrementer += 1;
+        }
+        return result;
+      }, [])}
+    </div>
+  );
+};
+
+
+Map.propTypes = {
+  map: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
+  height: React.PropTypes.number.isRequired,
+  width: React.PropTypes.number.isRequired,
+  player: React.PropTypes.shape({
+    row: React.PropTypes.number.isRequired,
+    col: React.PropTypes.number.isRequired,
+  }).isRequired,
+};
+
+
+const Row = ({ row, player, mapReduce }) => {
+  let incrementer = 0;
+
+
+  return (
+    <div className="gameRow" style={{ height: tileHeight }}>
+      {row.reduce((result, col, index) => {
+        if (index >= mapReduce.startColIndex && index < mapReduce.endColIndex) {
+          if (player && player.col === index) {
+            result.push(<Tile key={incrementer} col={col} player={player} />);
+          } else {
+            result.push(<Tile key={incrementer} col={col} />);
+          }
+          incrementer += 1;
+        }
+        return result;
+      }, [])}
+    </div>
+  );
+};
+
+
+Row.propTypes = {
+  row: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  mapReduce: React.PropTypes.shape({
+    startRowIndex: React.PropTypes.number.isRequired,
+    endRowIndex: React.PropTypes.number.isRequired,
+    startColIndex: React.PropTypes.number.isRequired,
+    endColIndex: React.PropTypes.number.isRequired,
+  }).isRequired,
+  player: React.PropTypes.shape({
+    row: React.PropTypes.number.isRequired,
+    col: React.PropTypes.number.isRequired,
+  }),
+};
+
+
+Row.defaultProps = {
+  player: undefined,
+};
+
 
 export default Map;
