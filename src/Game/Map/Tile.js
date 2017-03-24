@@ -30,6 +30,12 @@ const tileValue = (col) => {
   } else if (col === 2) {
     return <img src="/images/health_potion.gif" alt="2" />;
   }
+
+  // monsters
+  if (col === 10) {
+    return <img src="/images/monster_0.gif" alt="10" />;
+  }
+
   return col;
 };
 
@@ -41,12 +47,11 @@ const Tile = ({ col, player }) => {
     width: tileWidth,
     height: tileHeight,
     display: 'inline-block',
-    color: player ? playerColor : '', // Override default color if player is on the tile;
   };
 
   return (
     <div className={className} style={style}>
-      {player && 'X'}
+      {player && <img src="/images/hero.gif" alt="X" />}
       {!player && tileValue(col)}
     </div>
   );
