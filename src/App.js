@@ -58,6 +58,13 @@ class App extends Component {
         exp: 0,
         weapon: 'fists',
         shield: 'no shield',
+        fight: function fight(monster) {
+          const isMonsterDead = monster.recieveDamage(this);
+          if (!isMonsterDead) {
+            this.health -= monster.attack;
+          }
+          return this.health > 0;
+        },
       },
     };
   }
@@ -70,23 +77,19 @@ class App extends Component {
       switch (e.keyCode) {
         case 65:// a
         case 37:// left arrow
-          // move left
-          this.movePlayerPosition(0, -1);
+          this.movePlayerPosition(0, -1); // move left
           break;
         case 68:// d
         case 39:// right arrow
-          // move right
-          this.movePlayerPosition(0, 1);
+          this.movePlayerPosition(0, 1); // move right
           break;
         case 87:// w
         case 38:// up arrow
-          this.movePlayerPosition(-1, 0);
-          // move up
+          this.movePlayerPosition(-1, 0); // move up
           break;
         case 83:// s
         case 40:// down arrow
-          // move down
-          this.movePlayerPosition(1, 0);
+          this.movePlayerPosition(1, 0); // move down
           break;
         default:
       }
@@ -113,7 +116,7 @@ class App extends Component {
     // If the player is moving onto a monster, adjust health of characters
     // and prevent player from moving onto the square
     if (newState.map[moveToRow][moveToCol] >= 10) {
-      newState.player.health -= 20;
+      newState.player.fight(newState.monster);
     } else {
       newState.player.row = moveToRow;
       newState.player.col = moveToCol;
