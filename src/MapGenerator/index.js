@@ -49,15 +49,28 @@ const generateMap = () => {
   map[11][22] = h;
   map[2][15] = h;
 
+  // Add weapons to the map
+  const w = {
+    type: 'weapon',
+    name: 'Pocket Knife',
+    image: '/images/pocket_knife.gif',
+    attack: 5,
+  };
+  map[10][14] = w;
+
   // Add a couple of monsters to the map
   const m1 = Object.create(monster);
-  m1.init(1, 5);
+  m1.init(1, 5, 'ghost');
 
   const m2 = Object.create(monster);
-  m2.init(1, 5);
+  m2.init(1, 5, 'ghost');
+
+  const m3 = Object.create(monster);
+  m3.init(2, 15, 'ghoul');
 
   map[16][10] = m1;
   map[30][25] = m2;
+  map[3][23] = m3;
 
   return map;
 };

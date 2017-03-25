@@ -10,12 +10,12 @@ const Tile = ({ col, player }) => {
   };
 
   return (
-    <div className={col.name} style={style}>
+    <div className={col.type} style={style}>
       {player && <Player />}
-      {!player && col.name === 'monster' &&
+      {!player && col.type === 'monster' &&
         <Monster monster={col} />
       }
-      {!player && col.name !== 'monster' && <img src={col.image} alt={col.name} />}
+      {!player && col.type !== 'monster' && <img src={col.image} alt={col.type} />}
     </div>
   );
 };
@@ -23,8 +23,9 @@ const Tile = ({ col, player }) => {
 
 Tile.propTypes = {
   col: React.PropTypes.shape({
-    name: React.PropTypes.string.isRequired,
+    type: React.PropTypes.string.isRequired,
     image: React.PropTypes.string.isRequired,
+    name: React.PropTypes.string,
   }).isRequired,
   player: React.PropTypes.shape({
     row: React.PropTypes.number.isRequired,
@@ -35,6 +36,9 @@ Tile.propTypes = {
 
 Tile.defaultProps = {
   player: undefined,
+  col: {
+    name: '',
+  },
 };
 
 

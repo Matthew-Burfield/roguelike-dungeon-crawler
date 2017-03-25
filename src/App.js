@@ -19,19 +19,62 @@ class App extends Component {
       player: {
         row: 5,
         col: 5,
-        health: 100,
+        maxHealth: 100,
+        currHealth: 100,
         level: 1,
         exp: 0,
-        attack: 1,
+        baseAttack: 1,
         defense: 0,
-        weapon: 'fists',
+        weapon: {
+          type: 'weapon',
+          name: 'fists',
+          attack: 0,
+        },
         shield: 'no shield',
-        fight: function fight(monster) {
+        attack() {
+          const totalAttack = this.baseAttack + this.weapon.attack;
+          return Math.floor(totalAttack * ((Math.random() * (1.1 - 0.9)) + 0.9));
+        },
+        /* Returns false if the player has died */
+        fight(monster) {
           monster.recieveDamage(this);
           if (monster.isAlive) {
-            this.health -= monster.attack;
+            this.currHealth -= monster.attack;
           }
-          return this.health > 0;
+          return this.currHealth > 0;
+        },
+        increaseExperience(exp) {
+          const prevExp = this.exp;
+          this.exp += exp;
+          this.levelUp(prevExp);
+        },
+        equipWeapon(weapon) {
+          if (weapon.attack > this.weapon.attack) {
+            this.weapon = weapon;
+          }
+        },
+        consumeHealthPotion(potion) {
+          this.currHealth += potion.health;
+          this.currHealth = this.currHealth > this.maxHealth ? this.maxHealth : this.currHealth;
+        },
+        levelUp(prevExp) {
+          if (this.exp >= 100 && prevExp < 100) {
+            this.level += 1;
+            this.maxHealth += 20;
+            this.currHealth = this.maxHealth;
+          } else if (this.exp >= 200 && prevExp < 200) {
+            this.level += 1;
+            this.maxHealth += 20;
+            this.currHealth = this.maxHealth;
+          } else if (this.exp >= 300 && prevExp < 200) {
+            this.level += 1;
+            this.maxHealth += 20;
+            this.currHealth = this.maxHealth;
+          } else if (this.exp >= 400 && prevExp < 200) {
+            this.level += 1;
+            this.maxHealth += 20;
+            this.currHealth = this.maxHealth;
+          }
         },
       },
     };
@@ -69,23 +112,31 @@ class App extends Component {
     const moveToCol = this.state.player.col + relCol;
 
     // Don't update the position if player will be moving onto a blocking square
-    if (this.state.map[moveToRow][moveToCol].name === 'wall') {
+    if (this.state.map[moveToRow][moveToCol].type === 'wall') {
       return;
     }
 
     const newState = Object.assign({}, this.state);
 
+    const tileItem = newState.map[moveToRow][moveToCol];
+
     // If the player is moving onto a health square, increase the players health
-    if (newState.map[moveToRow][moveToCol].name === 'health potion') {
+    if (tileItem.type === 'health potion') {
       newState.map[moveToRow][moveToCol] = f;
-      newState.player.health += 10;
+      newState.player.consumeHealthPotion(tileItem);
+    }
+
+    // If the player is moving onto a weapon, assign the new weapon and increase the players attack
+    if (tileItem.type === 'weapon') {
+      newState.map[moveToRow][moveToCol] = f;
+      newState.player.equipWeapon(tileItem);
     }
 
     // If the player is moving onto a monster, adjust health of characters
     // and prevent player from moving onto the square
-    if (newState.map[moveToRow][moveToCol].name === 'monster' &&
-        newState.map[moveToRow][moveToCol].isAlive === true) {
-      const monster = newState.map[moveToRow][moveToCol];
+    if (tileItem.type === 'monster' &&
+        tileItem.isAlive === true) {
+      const monster = tileItem;
       newState.player.fight(monster);
     } else {
       newState.player.row = moveToRow;
