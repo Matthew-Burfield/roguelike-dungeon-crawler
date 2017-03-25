@@ -9,7 +9,8 @@ export const tileHeight = '30px';
 export const monster = {
   init(level, health) {
     this.level = level;
-    this.health = health;
+    this.totalHealth = health;
+    this.currentHealth = health;
     this.image = `/images/monster_${level}.gif`;
     this.name = 'monster';
     this.isAlive = true;
@@ -17,12 +18,12 @@ export const monster = {
   },
   recieveDamage(player) {
     if (this.isAlive) {
-      this.health -= player.attack;
+      this.currentHealth -= player.attack;
       this.isDead();
     }
   },
   isDead() {
-    if (this.health <= 0) {
+    if (this.currentHealth <= 0) {
       this.isAlive = false;
       this.image = '/images/floor.gif';
     }
