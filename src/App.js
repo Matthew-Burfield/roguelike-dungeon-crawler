@@ -12,8 +12,8 @@ class App extends Component {
     super();
     this.state = {
       game: {
-        width: window.innerWidth,
-        height: 300,
+        width: 250,
+        height: 250,
       },
       map: generateMap(),
       player: {
