@@ -71,7 +71,7 @@ const generateMap = () => {
   const w = {
     type: 'weapon',
     name: 'Pocket Knife',
-    image: '/images/pocket_knife.gif',
+    image: 'images/pocket_knife.gif',
     attack: 5,
   };
   mapItems.push(w);
