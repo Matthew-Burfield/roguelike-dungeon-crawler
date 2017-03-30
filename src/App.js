@@ -22,7 +22,8 @@ class App extends Component {
         maxHealth: 100,
         currHealth: 100,
         level: 1,
-        exp: 0,
+        currExp: 0,
+        nextLevelExp: 100,
         baseAttack: 1,
         defense: 0,
         weapon: {
@@ -44,9 +45,10 @@ class App extends Component {
           return this.currHealth > 0;
         },
         increaseExperience(exp) {
-          const prevExp = this.exp;
-          this.exp += exp;
-          this.levelUp(prevExp);
+          this.currExp += exp;
+          if (this.currExp >= this.nextLevelExp) {
+            this.levelUp();
+          }
         },
         equipWeapon(weapon) {
           if (weapon.attack > this.weapon.attack) {
@@ -57,24 +59,12 @@ class App extends Component {
           this.currHealth += potion.health;
           this.currHealth = this.currHealth > this.maxHealth ? this.maxHealth : this.currHealth;
         },
-        levelUp(prevExp) {
-          if (this.exp >= 100 && prevExp < 100) {
-            this.level += 1;
-            this.maxHealth += 20;
-            this.currHealth = this.maxHealth;
-          } else if (this.exp >= 200 && prevExp < 200) {
-            this.level += 1;
-            this.maxHealth += 20;
-            this.currHealth = this.maxHealth;
-          } else if (this.exp >= 300 && prevExp < 200) {
-            this.level += 1;
-            this.maxHealth += 20;
-            this.currHealth = this.maxHealth;
-          } else if (this.exp >= 400 && prevExp < 200) {
-            this.level += 1;
-            this.maxHealth += 20;
-            this.currHealth = this.maxHealth;
-          }
+        levelUp() {
+          this.level += 1;
+          this.maxHealth += 20;
+          this.currExp = 0;
+          this.nextLevelExp *= 1.2;
+          this.currHealth = this.maxHealth;
         },
       },
     };
