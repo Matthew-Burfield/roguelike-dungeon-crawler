@@ -17,8 +17,8 @@ class App extends Component {
       },
       map: generateMap(),
       player: {
-        row: 5,
-        col: 5,
+        row: 1,
+        col: 1,
         maxHealth: 100,
         currHealth: 100,
         level: 1,
