@@ -19,7 +19,7 @@ export const monster = {
     this.level = level;
     this.totalHealth = health;
     this.currentHealth = health;
-    this.image = `/images/monster_${level}.gif`;
+    this.image = `images/monster_${level}.gif`;
     this.type = 'monster';
     this.isAlive = true;
     this.attack = level * health;
@@ -33,7 +33,7 @@ export const monster = {
   isDead(player) {
     if (this.currentHealth <= 0) {
       this.isAlive = false;
-      this.image = '/images/floor.gif';
+      this.image = 'images/floor.gif';
       player.increaseExperience(this.level * 50);
     }
   },
@@ -44,18 +44,18 @@ export const monster = {
 // (blocking) wall
 export const b = {
   type: 'wall',
-  image: '/images/wall.gif',
+  image: 'images/wall.gif',
 };
 
 // floor
 export const f = {
   type: 'floor',
-  image: '/images/floor.gif',
+  image: 'images/floor.gif',
 };
 
 // health potion
 export const h = {
   type: 'health potion',
-  image: '/images/health_potion.gif',
+  image: 'images/health_potion.gif',
   health: 10,
 };

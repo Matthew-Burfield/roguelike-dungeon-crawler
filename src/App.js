@@ -29,7 +29,7 @@ class App extends Component {
         nextLevelExp: 100,
         baseAttack: 1,
         defense: 0,
-        image: '/images/hero.gif',
+        image: 'images/hero.gif',
         weapon: {
           type: 'weapon',
           name: 'fists',
@@ -120,7 +120,7 @@ class App extends Component {
       if (playerHealth <= 0) {
         newState.gameState = GAMESTATE_DEATH;
         document.removeEventListener('keydown', this.keyPressEvents);
-        newState.player.image = '/images/tombstone.gif';
+        newState.player.image = 'images/tombstone.gif';
       }
     } else {
       newState.player.row = moveToRow;

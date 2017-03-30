@@ -1,4 +1,4 @@
-import dungeon from 'random-dungeon-generator';
+import NewDungeon from 'random-dungeon-generator';
 import { monster, b, f, h } from '../utility';
 
 
@@ -14,7 +14,7 @@ function randomIndexBetweenValues(min, max) {
 }
 
 
-const getMap = () => dungeon({ maxRoomSize: 15 }).level;
+const getMap = () => NewDungeon({ maxRoomSize: 15 });
 //   [
 //     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 //     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
