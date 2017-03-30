@@ -5,16 +5,19 @@ import './App.css';
 import Map from './Game/Map';
 import HUI from './Game/HUI';
 import generateMap from './MapGenerator';
-import { f } from './utility';
+import { f,
+  GAMESTATE_PLAYING,
+  // GAMESTATE_STARTMENU,
+  GAMESTATE_DEATH,
+  CONTAINER_WIDTH,
+  CONTAINER_HEIGHT,
+} from './utility';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      game: {
-        width: 250,
-        height: 250,
-      },
+      gameState: GAMESTATE_PLAYING,
       map: generateMap(),
       player: {
         row: 1,
@@ -26,6 +29,7 @@ class App extends Component {
         nextLevelExp: 100,
         baseAttack: 1,
         defense: 0,
+        image: '/images/hero.gif',
         weapon: {
           type: 'weapon',
           name: 'fists',
@@ -38,11 +42,16 @@ class App extends Component {
         },
         /* Returns false if the player has died */
         fight(monster) {
-          monster.recieveDamage(this);
-          if (monster.isAlive) {
-            this.currHealth -= monster.attack;
+          if (this.currHealth > 0) {
+            monster.recieveDamage(this);
+            if (monster.isAlive) {
+              this.currHealth -= monster.attack;
+              if (this.currHealth < 0) {
+                this.currHealth = 0;
+              }
+            }
           }
-          return this.currHealth > 0;
+          return this.currHealth;
         },
         increaseExperience(exp) {
           this.currExp += exp;
@@ -74,27 +83,7 @@ class App extends Component {
     /* This is before the component gets rendered for the first time
        add some event listeners for keyboard presses
     */
-    document.addEventListener('keydown', (e) => {
-      switch (e.keyCode) {
-        case 65:// a
-        case 37:// left arrow
-          this.movePlayerPosition(0, -1); // move left
-          break;
-        case 68:// d
-        case 39:// right arrow
-          this.movePlayerPosition(0, 1); // move right
-          break;
-        case 87:// w
-        case 38:// up arrow
-          this.movePlayerPosition(-1, 0); // move up
-          break;
-        case 83:// s
-        case 40:// down arrow
-          this.movePlayerPosition(1, 0); // move down
-          break;
-        default:
-      }
-    });
+    document.addEventListener('keydown', this.keyPressEvents);
   }
 
   movePlayerPosition(relRow, relCol) {
@@ -127,7 +116,12 @@ class App extends Component {
     if (tileItem.type === 'monster' &&
         tileItem.isAlive === true) {
       const monster = tileItem;
-      newState.player.fight(monster);
+      const playerHealth = newState.player.fight(monster);
+      if (playerHealth <= 0) {
+        newState.gameState = GAMESTATE_DEATH;
+        document.removeEventListener('keydown', this.keyPressEvents);
+        newState.player.image = '/images/tombstone.gif';
+      }
     } else {
       newState.player.row = moveToRow;
       newState.player.col = moveToCol;
@@ -138,6 +132,28 @@ class App extends Component {
     });
   }
 
+  keyPressEvents = (e) => {
+    switch (e.keyCode) {
+      case 65:// a
+      case 37:// left arrow
+        this.movePlayerPosition(0, -1); // move left
+        break;
+      case 68:// d
+      case 39:// right arrow
+        this.movePlayerPosition(0, 1); // move right
+        break;
+      case 87:// w
+      case 38:// up arrow
+        this.movePlayerPosition(-1, 0); // move up
+        break;
+      case 83:// s
+      case 40:// down arrow
+        this.movePlayerPosition(1, 0); // move down
+        break;
+      default:
+    }
+  };
+
   render() {
     return (
       <div className="App">
@@ -147,8 +163,8 @@ class App extends Component {
         <Map
           map={this.state.map}
           player={this.state.player}
-          width={this.state.game.width}
-          height={this.state.game.height}
+          width={CONTAINER_WIDTH}
+          height={CONTAINER_HEIGHT}
         />
         <HUI
           player={this.state.player}

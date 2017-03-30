@@ -52,13 +52,31 @@ const Map = ({ map, player, height, width }) => {
 
 
   return (
-    <div className="gameMap" style={{ height: `${height}px`, width: `${width}px` }}>
+    <div className="gameMap" style={{ margin: 'auto', height: `${height}px`, width: `${width}px` }}>
       {map.reduce((result, row, index) => {
-        if (index >= mapReduce.startRowIndex && index < mapReduce.endRowIndex) {
+        if (index >= mapReduce.startRowIndex && index <= mapReduce.endRowIndex) {
+          const opacity = 1 / (Math.abs(index - player.row) || 1);
           if (player.row === index) {
-            result.push(<Row key={incrementer} row={row} mapReduce={mapReduce} player={player} />);
+            result.push(
+              <Row
+                key={incrementer}
+                row={row}
+                mapReduce={mapReduce}
+                player={player}
+                opacity={opacity}
+                playerCol={player.col}
+              />,
+            );
           } else {
-            result.push(<Row key={incrementer} row={row} mapReduce={mapReduce} />);
+            result.push(
+              <Row
+                key={incrementer}
+                row={row}
+                mapReduce={mapReduce}
+                opacity={opacity}
+                playerCol={player.col}
+              />,
+            );
           }
           incrementer += 1;
         }
@@ -80,18 +98,23 @@ Map.propTypes = {
 };
 
 
-const Row = ({ row, player, mapReduce }) => {
+const Row = ({ row, player, mapReduce, opacity, playerCol }) => {
   let incrementer = 0;
 
 
   return (
     <div className="gameRow" style={{ height: tileHeight }}>
       {row.reduce((result, col, index) => {
-        if (index >= mapReduce.startColIndex && index < mapReduce.endColIndex) {
+        if (index >= mapReduce.startColIndex && index <= mapReduce.endColIndex) {
+          const tempOpacityVal = 1 / (Math.abs(index - playerCol) || 1);
+          let colOpacity = opacity;
+          if (tempOpacityVal < opacity) {
+            colOpacity = tempOpacityVal;
+          }
           if (player && player.col === index) {
-            result.push(<Tile key={incrementer} col={col} player={player} />);
+            result.push(<Tile key={incrementer} col={col} player={player} opacity={colOpacity} />);
           } else {
-            result.push(<Tile key={incrementer} col={col} />);
+            result.push(<Tile key={incrementer} col={col} opacity={colOpacity} />);
           }
           incrementer += 1;
         }
@@ -103,6 +126,8 @@ const Row = ({ row, player, mapReduce }) => {
 
 
 Row.propTypes = {
+  opacity: React.PropTypes.number.isRequired,
+  playerCol: React.PropTypes.number.isRequired,
   row: React.PropTypes.arrayOf(React.PropTypes.shape({
     type: React.PropTypes.string.isRequired,
     image: React.PropTypes.string.isRequired,

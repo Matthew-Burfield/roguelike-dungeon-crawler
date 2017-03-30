@@ -2,16 +2,17 @@ import React from 'react';
 import { tileWidth, tileHeight } from '../../utility';
 
 
-const Tile = ({ col, player }) => {
+const Tile = ({ col, player, opacity }) => {
   const style = {
     width: tileWidth,
     height: tileHeight,
     display: 'inline-block',
+    opacity,
   };
 
   return (
     <div className={col.type} style={style}>
-      {player && <Player />}
+      {player && <img src={player.image} alt="X" />}
       {!player && col.type === 'monster' &&
         <Monster monster={col} />
       }
@@ -31,6 +32,7 @@ Tile.propTypes = {
     row: React.PropTypes.number.isRequired,
     col: React.PropTypes.number.isRequired,
   }),
+  opacity: React.PropTypes.number.isRequired,
 };
 
 
@@ -66,10 +68,6 @@ Monster.propTypes = {
     name: React.PropTypes.string.isRequired,
   }).isRequired,
 };
-
-
-const Player = () =>
-  <img src="/images/hero.gif" alt="X" />;
 
 
 export default Tile;

@@ -80,7 +80,7 @@ const generateMap = () => {
   const numMonsters = 10;
   for (let i = 0; i < numMonsters; i += 1) {
     const m = Object.create(monster);
-    m.init(1, 5, 'ghost');
+    m.init(1, 10, 'ghost');
     mapItems.push(m);
   }
 

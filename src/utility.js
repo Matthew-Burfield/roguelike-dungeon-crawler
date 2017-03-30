@@ -6,6 +6,13 @@ export const playerColor = '#FF5722';
 export const tileWidth = '30px';
 export const tileHeight = '30px';
 
+export const GAMESTATE_PLAYING = 'PLAYING';
+export const GAMESTATE_STARTMENU = 'START_MENU';
+export const GAMESTATE_DEATH = 'DEATH';
+
+export const CONTAINER_WIDTH = 330;
+export const CONTAINER_HEIGHT = 330;
+
 export const monster = {
   init(level, health, name) {
     this.name = name;
