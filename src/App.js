@@ -38,13 +38,13 @@ class App extends Component {
         weapon: {
           type: 'weapon',
           name: 'none',
-          image: '/images/empty.gif',
+          image: 'images/empty.gif',
           attack: 0,
         },
         shield: {
           type: 'shield',
           name: 'none',
-          image: '/images/empty.gif',
+          image: 'images/empty.gif',
           defense: 0,
         },
         getImage() {

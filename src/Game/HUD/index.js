@@ -15,7 +15,7 @@ class HUD extends React.Component {
 
   render() {
     const { player } = this.props;
-    const heroImage = `/images/hero1-hui${this.props.heroImage}.gif`;
+    const heroImage = `images/hero1-hui${this.props.heroImage}.gif`;
     const HUD_WIDTH = CONTAINER_WIDTH + 50;
 
     return (
