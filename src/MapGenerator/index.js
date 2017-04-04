@@ -71,7 +71,7 @@ const generateMap = () => {
   const w = {
     type: 'weapon',
     name: 'Pocket Knife',
-    image: 'images/pocket_knife.gif',
+    image: 'images/dagger.gif',
     attack: 5,
   };
   mapItems.push(w);
@@ -80,7 +80,7 @@ const generateMap = () => {
   const numMonsters = 10;
   for (let i = 0; i < numMonsters; i += 1) {
     const m = Object.create(monster);
-    m.init(1, 10, 'ghost');
+    m.init(1, 3, 'ghost');
     mapItems.push(m);
   }
 

@@ -1,18 +1,22 @@
 import React from 'react';
-import { tileWidth, tileHeight } from '../../utility';
+import { TILE_WIDTH, TILE_HEIGHT, FLOOR_TILE_IMAGE } from '../../utility';
 
 
 const Tile = ({ col, player, opacity }) => {
   const style = {
-    width: tileWidth,
-    height: tileHeight,
+    width: TILE_WIDTH,
+    height: TILE_HEIGHT,
     display: 'inline-block',
     opacity,
   };
 
+  if (col.type !== 'wall') {
+    style.backgroundImage = `url(${FLOOR_TILE_IMAGE})`;
+  }
+
   return (
     <div className={col.type} style={style}>
-      {player && <img src={player.image} alt="X" />}
+      {player && <img src={player.getImage()} alt="X" />}
       {!player && col.type === 'monster' &&
         <Monster monster={col} />
       }

@@ -3,22 +3,27 @@
 import React, { Component } from 'react';
 import './App.css';
 import Map from './Game/Map';
-import HUI from './Game/HUI';
+import HUD from './Game/HUD';
 import generateMap from './MapGenerator';
 import { f,
-  GAMESTATE_PLAYING,
-  // GAMESTATE_STARTMENU,
-  GAMESTATE_DEATH,
+  GAME_STATE_PLAYING,
+  // GAME_STATE_START_MENU,
+  GAME_STATE_DEATH,
   CONTAINER_WIDTH,
   CONTAINER_HEIGHT,
+  LEFT,
+  RIGHT,
+  UP,
+  DOWN,
 } from './utility';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      gameState: GAMESTATE_PLAYING,
+      gameState: GAME_STATE_PLAYING,
       map: generateMap(),
+      hudPlayerImage: 1,
       player: {
         row: 1,
         col: 1,
@@ -29,13 +34,22 @@ class App extends Component {
         nextLevelExp: 100,
         baseAttack: 1,
         defense: 0,
-        image: 'images/hero.gif',
+        currentDirection: DOWN,
         weapon: {
           type: 'weapon',
-          name: 'fists',
+          name: 'none',
+          image: '/images/empty.gif',
           attack: 0,
         },
-        shield: 'no shield',
+        shield: {
+          type: 'shield',
+          name: 'none',
+          image: '/images/empty.gif',
+          defense: 0,
+        },
+        getImage() {
+          return `images/hero1-${this.currentDirection}.gif`;
+        },
         attack() {
           const totalAttack = this.baseAttack + this.weapon.attack;
           return Math.floor(totalAttack * ((Math.random() * (1.1 - 0.9)) + 0.9));
@@ -43,7 +57,7 @@ class App extends Component {
         /* Returns false if the player has died */
         fight(monster) {
           if (this.currHealth > 0) {
-            monster.recieveDamage(this);
+            monster.receiveDamage(this);
             if (monster.isAlive) {
               this.currHealth -= monster.attack;
               if (this.currHealth < 0) {
@@ -60,9 +74,7 @@ class App extends Component {
           }
         },
         equipWeapon(weapon) {
-          if (weapon.attack > this.weapon.attack) {
-            this.weapon = weapon;
-          }
+          this.weapon = weapon;
         },
         consumeHealthPotion(potion) {
           this.currHealth += potion.health;
@@ -77,14 +89,33 @@ class App extends Component {
         },
       },
     };
+    this.tick = this.tick.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     /* This is before the component gets rendered for the first time
        add some event listeners for keyboard presses
     */
     document.addEventListener('keydown', this.keyPressEvents);
   }
+
+
+
+  setPlayerPosition(direction) {
+    const newState = Object.assign({}, this.state);
+    newState.player.currentDirection = direction;
+    this.setState({
+      newState,
+    });
+  }
+
+
+  tick() {
+    this.setState(prevState => ({
+      hudPlayerImage: prevState.hudPlayerImage === 1 ? 2 : 1,
+    }));
+  }
+
 
   movePlayerPosition(relRow, relCol) {
     const moveToRow = this.state.player.row + relRow;
@@ -118,7 +149,7 @@ class App extends Component {
       const monster = tileItem;
       const playerHealth = newState.player.fight(monster);
       if (playerHealth <= 0) {
-        newState.gameState = GAMESTATE_DEATH;
+        newState.gameState = GAME_STATE_DEATH;
         document.removeEventListener('keydown', this.keyPressEvents);
         newState.player.image = 'images/tombstone.gif';
       }
@@ -136,18 +167,22 @@ class App extends Component {
     switch (e.keyCode) {
       case 65:// a
       case 37:// left arrow
+        this.setPlayerPosition(LEFT);
         this.movePlayerPosition(0, -1); // move left
         break;
       case 68:// d
       case 39:// right arrow
+        this.setPlayerPosition(RIGHT);
         this.movePlayerPosition(0, 1); // move right
         break;
       case 87:// w
       case 38:// up arrow
+        this.setPlayerPosition(UP);
         this.movePlayerPosition(-1, 0); // move up
         break;
       case 83:// s
       case 40:// down arrow
+        this.setPlayerPosition(DOWN);
         this.movePlayerPosition(1, 0); // move down
         break;
       default:
@@ -158,7 +193,7 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-header">
-          <h2>Roguelike Dungeon Crawler</h2>
+          <h2>Rogue-like Dungeon Crawler</h2>
         </div>
         <Map
           map={this.state.map}
@@ -166,8 +201,10 @@ class App extends Component {
           width={CONTAINER_WIDTH}
           height={CONTAINER_HEIGHT}
         />
-        <HUI
+        <HUD
           player={this.state.player}
+          heroImage={this.state.hudPlayerImage}
+          tick={this.tick}
         />
       </div>
     );

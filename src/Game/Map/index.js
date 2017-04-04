@@ -1,6 +1,6 @@
 import React from 'react';
 import Tile from './Tile';
-import { tileHeight } from '../../utility';
+import { TILE_HEIGHT } from '../../utility';
 
 
 const getVisibleTiles = (map, height, width, playerY, playerX) => {
@@ -22,7 +22,7 @@ const getVisibleTiles = (map, height, width, playerY, playerX) => {
 
   // Includes border conditions.
   // If we can't fit all of the tiles above or below the player,
-  // Then compensate by adding additonal tiles on the opposite side.
+  // Then compensate by adding additional tiles on the opposite side.
   /*
   ** Use case: If we are able to render 10 tiles vertically
   ** and the player is at the top of the map, instead of having
@@ -48,7 +48,7 @@ const getVisibleTiles = (map, height, width, playerY, playerX) => {
 
 const Map = ({ map, player, height, width }) => {
   const mapReduce = getVisibleTiles(map, height, width, player.row, player.col);
-  let incrementer = 0;
+  let incrementor = 0;
 
 
   return (
@@ -59,7 +59,7 @@ const Map = ({ map, player, height, width }) => {
           if (player.row === index) {
             result.push(
               <Row
-                key={incrementer}
+                key={incrementor}
                 row={row}
                 mapReduce={mapReduce}
                 player={player}
@@ -70,7 +70,7 @@ const Map = ({ map, player, height, width }) => {
           } else {
             result.push(
               <Row
-                key={incrementer}
+                key={incrementor}
                 row={row}
                 mapReduce={mapReduce}
                 opacity={opacity}
@@ -78,7 +78,7 @@ const Map = ({ map, player, height, width }) => {
               />,
             );
           }
-          incrementer += 1;
+          incrementor += 1;
         }
         return result;
       }, [])}
@@ -99,11 +99,11 @@ Map.propTypes = {
 
 
 const Row = ({ row, player, mapReduce, opacity, playerCol }) => {
-  let incrementer = 0;
+  let incrementor = 0;
 
 
   return (
-    <div className="gameRow" style={{ height: tileHeight }}>
+    <div className="gameRow" style={{ height: TILE_HEIGHT }}>
       {row.reduce((result, col, index) => {
         if (index >= mapReduce.startColIndex && index <= mapReduce.endColIndex) {
           const tempOpacityVal = 1 / (Math.abs(index - playerCol) || 1);
@@ -112,11 +112,11 @@ const Row = ({ row, player, mapReduce, opacity, playerCol }) => {
             colOpacity = tempOpacityVal;
           }
           if (player && player.col === index) {
-            result.push(<Tile key={incrementer} col={col} player={player} opacity={colOpacity} />);
+            result.push(<Tile key={incrementor} col={col} player={player} opacity={colOpacity} />);
           } else {
-            result.push(<Tile key={incrementer} col={col} opacity={colOpacity} />);
+            result.push(<Tile key={incrementor} col={col} opacity={colOpacity} />);
           }
-          incrementer += 1;
+          incrementor += 1;
         }
         return result;
       }, [])}

@@ -3,15 +3,22 @@ export const playerColor = '#FF5722';
 
 // tileWidth and tileHeight can't really be changed now that
 // we're using pixel tiles to display objects.
-export const tileWidth = '30px';
-export const tileHeight = '30px';
+export const TILE_WIDTH = '30px';
+export const TILE_HEIGHT = '30px';
 
-export const GAMESTATE_PLAYING = 'PLAYING';
-export const GAMESTATE_STARTMENU = 'START_MENU';
-export const GAMESTATE_DEATH = 'DEATH';
+export const GAME_STATE_PLAYING = 'PLAYING';
+export const GAME_STATE_START_MENU = 'START_MENU';
+export const GAME_STATE_DEATH = 'DEATH';
 
 export const CONTAINER_WIDTH = 330;
 export const CONTAINER_HEIGHT = 330;
+
+export const LEFT = 'LEFT';
+export const RIGHT = 'RIGHT';
+export const UP = 'UP';
+export const DOWN = 'DOWN';
+
+export const FLOOR_TILE_IMAGE = 'images/floor.gif';
 
 export const monster = {
   init(level, health, name) {
@@ -24,7 +31,7 @@ export const monster = {
     this.isAlive = true;
     this.attack = level * health;
   },
-  recieveDamage(player) {
+  receiveDamage(player) {
     if (this.isAlive) {
       this.currentHealth -= player.attack();
       this.isDead(player);
