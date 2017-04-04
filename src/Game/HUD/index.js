@@ -23,6 +23,14 @@ class HUD extends React.Component {
         <div id="playerStatus" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around', width: 160 }}>
           <Icon id="shieldSquare" width={40} height={40} image={player.shield.image} altText="shield" />
           <Icon id="playerSquare" width={70} height={70} image={heroImage} altText="hero" />
+          { /* <div id="heroHover" style={{ position: 'absolute', backgroundColor: 'black', opacity: 0.6, fontSize: '0.5em', top: '-100px', left: '50px' }}>
+            <div style={{ marginLeft: 20, marginTop: 20, textAlign: 'left' }}>
+              <p style={{ fontSize: '1.2em' }}>Hero</p>
+              <p>Level: {player.level}</p>
+              <p>Health: {player.currHealth} / {player.maxHealth}</p>
+              <p>EXP: {player.currExp} / {player.nextLevelExp}</p>
+            </div>
+          </div>*/}
           <Icon id="weaponSquare" width={40} height={40} image={player.weapon.image} altText="weapon" />
         </div>
         <div style={{ marginTop: 10 }}>
@@ -91,7 +99,8 @@ PlayerBar.propTypes = {
 
 
 const Icon = ({ id, width, height, image, altText }) =>
-  <div id={id} className="iconSquare" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width, height, background: 'radial-gradient(#424242, #212121)', borderRadius: 10 }}>
+  <div id={id} className="iconSquare" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width, height, background: 'radial-gradient(#424242, #212121)', borderRadius: 10 }}>
+    <IconHover title={altText} />
     <img src={image} alt={altText} />
   </div>;
 
@@ -102,6 +111,19 @@ Icon.propTypes = {
   height: React.PropTypes.number.isRequired,
   image: React.PropTypes.string.isRequired,
   altText: React.PropTypes.string.isRequired,
+};
+
+
+const IconHover = ({ title }) =>
+  <div className="iconInfo" style={{ position: 'absolute', backgroundColor: '#000', opacity: 0.6, fontSize: '0.5em', top: '-100px', left: '50px' }}>
+    <div style={{ margin: 20, textAlign: 'left' }}>
+      <p style={{ fontSize: '1.2em' }}>{title}</p>
+    </div>
+  </div>;
+
+
+IconHover.propTypes = {
+  title: React.PropTypes.string.isRequired,
 };
 
 

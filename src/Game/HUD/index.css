@@ -1,3 +1,11 @@
 .iconSquare:hover {
   cursor: pointer;
 }
+
+.iconInfo {
+  display: none;
+}
+
+.iconSquare:hover > .iconInfo {
+  display: block;
+}
