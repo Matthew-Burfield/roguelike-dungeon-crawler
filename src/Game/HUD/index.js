@@ -22,15 +22,11 @@ class HUD extends React.Component {
       <div id="container" style={{ width: HUD_WIDTH, margin: '10px auto', display: 'flex', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column' }}>
         <div id="playerStatus" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around', width: 160 }}>
           <Icon id="shieldSquare" width={40} height={40} image={player.shield.image} altText="shield" />
-          <Icon id="playerSquare" width={70} height={70} image={heroImage} altText="hero" />
-          { /* <div id="heroHover" style={{ position: 'absolute', backgroundColor: 'black', opacity: 0.6, fontSize: '0.5em', top: '-100px', left: '50px' }}>
-            <div style={{ marginLeft: 20, marginTop: 20, textAlign: 'left' }}>
-              <p style={{ fontSize: '1.2em' }}>Hero</p>
-              <p>Level: {player.level}</p>
-              <p>Health: {player.currHealth} / {player.maxHealth}</p>
-              <p>EXP: {player.currExp} / {player.nextLevelExp}</p>
-            </div>
-          </div>*/}
+          <Icon id="playerSquare" width={70} height={70} image={heroImage} altText="hero">
+            <p>Level: {player.level}</p>
+            <p>Health: {player.currHealth} / {player.maxHealth}</p>
+            <p>EXP: {player.currExp} / {player.nextLevelExp}</p>
+          </Icon>
           <Icon id="weaponSquare" width={40} height={40} image={player.weapon.image} altText="weapon" />
         </div>
         <div style={{ marginTop: 10 }}>
@@ -83,7 +79,7 @@ const PlayerBar = ({ color, height, width, maxVal, currVal }) => {
 
   return (
     <div style={{ margin: 'auto', width, height, background: 'linear-gradient(#424242, #212121)' }}>
-      <div style={{ margin: 'left', width: widthCurrVal, height, background: color }}>{name}</div>
+      <div style={{ transition: 'width 0.5s', margin: 'left', width: widthCurrVal, height, background: color }}>{name}</div>
     </div>
   );
 };
@@ -98,9 +94,11 @@ PlayerBar.propTypes = {
 };
 
 
-const Icon = ({ id, width, height, image, altText }) =>
+const Icon = ({ id, width, height, image, altText, children }) =>
   <div id={id} className="iconSquare" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width, height, background: 'radial-gradient(#424242, #212121)', borderRadius: 10 }}>
-    <IconHover title={altText} />
+    <IconHover title={altText}>
+      {children}
+    </IconHover>
     <img src={image} alt={altText} />
   </div>;
 
@@ -111,19 +109,30 @@ Icon.propTypes = {
   height: React.PropTypes.number.isRequired,
   image: React.PropTypes.string.isRequired,
   altText: React.PropTypes.string.isRequired,
+  children: React.PropTypes.arrayOf(React.PropTypes.shape),
+};
+
+Icon.defaultProps = {
+  children: null,
 };
 
 
-const IconHover = ({ title }) =>
+const IconHover = ({ title, children }) =>
   <div className="iconInfo" style={{ position: 'absolute', backgroundColor: '#000', opacity: 0.6, fontSize: '0.5em', top: '-100px', left: '50px' }}>
     <div style={{ margin: 20, textAlign: 'left' }}>
       <p style={{ fontSize: '1.2em' }}>{title}</p>
+      {children}
     </div>
   </div>;
 
 
 IconHover.propTypes = {
   title: React.PropTypes.string.isRequired,
+  children: React.PropTypes.arrayOf(React.PropTypes.shape),
+};
+
+IconHover.defaultProps = {
+  children: null,
 };
 
 
