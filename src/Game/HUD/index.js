@@ -21,13 +21,19 @@ class HUD extends React.Component {
     return (
       <div id="container" style={{ width: HUD_WIDTH, margin: '10px auto', display: 'flex', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column' }}>
         <div id="playerStatus" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around', width: 160 }}>
-          <Icon id="shieldSquare" width={40} height={40} image={player.shield.image} altText="shield" />
+          <Icon id="weaponSquare" width={40} height={40} image={player.weapon.image} altText="weapon">
+            <p>Name: {player.weapon.name}</p>
+            <p>Attack: {player.weapon.attack}</p>
+          </Icon>
           <Icon id="playerSquare" width={70} height={70} image={heroImage} altText="hero">
             <p>Level: {player.level}</p>
             <p>Health: {player.currHealth} / {player.maxHealth}</p>
             <p>EXP: {player.currExp} / {player.nextLevelExp}</p>
           </Icon>
-          <Icon id="weaponSquare" width={40} height={40} image={player.weapon.image} altText="weapon" />
+          <Icon id="shieldSquare" width={40} height={40} image={player.shield.image} altText="shield">
+            <p>Name: {player.shield.name}</p>
+            <p>Defense: {player.shield.defense}</p>
+          </Icon>
         </div>
         <div style={{ marginTop: 10 }}>
           <PlayerBar
@@ -118,9 +124,9 @@ Icon.defaultProps = {
 
 
 const IconHover = ({ title, children }) =>
-  <div className="iconInfo" style={{ position: 'absolute', backgroundColor: '#000', opacity: 0.6, fontSize: '0.5em', top: '-100px', left: '50px' }}>
-    <div style={{ margin: 20, textAlign: 'left' }}>
-      <p style={{ fontSize: '1.2em' }}>{title}</p>
+  <div className="iconInfo" style={{ position: 'absolute', backgroundColor: '#000', opacity: 0.6, fontSize: '0.5em', top: '-200px', width: 200 }}>
+    <div style={{ margin: 20, textAlign: 'left', fontSize: '2em' }}>
+      <p style={{ fontSize: '1.2em', textDecoration: 'underline' }}>{title}</p>
       {children}
     </div>
   </div>;
