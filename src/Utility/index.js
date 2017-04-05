@@ -55,10 +55,7 @@ export const b = {
 };
 
 // floor
-export const f = {
-  type: 'floor',
-  image: 'images/floor.gif',
-};
+export const f = {};
 
 // health potion
 export const h = {

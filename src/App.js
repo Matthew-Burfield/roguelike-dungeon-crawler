@@ -15,8 +15,61 @@ import { f,
   RIGHT,
   UP,
   DOWN,
-} from './utility';
+} from './Utility';
+import getNewPlayer from './Utility/player';
 
+
+/**
+ * Helper function to update the hero position and action any
+ * consumable items if the new tile has any
+ *
+ * @param {object} tile 
+ * @param {object} state 
+ * @param {array} newCoords 
+ * @returns {object} newState
+ */
+function checkTileAndMove(tile, state, newCoords) {
+  const newState = Object.assign({}, state);
+  const newRow = newCoords[0];
+  const newCol = newCoords[1];
+
+  // If the player is moving onto a health square, increase the players health
+  if (tile.type === 'health potion') {
+    newState.map[newRow][newCol] = f;
+    newState.player.consumeHealthPotion(tile);
+  }
+
+  // If the player is moving onto a weapon, assign the new weapon and increase the players attack
+  if (tile.type === 'weapon') {
+    newState.map[newRow][newCol] = f;
+    newState.player.equipWeapon(tile);
+  }
+
+  // If the player is moving onto a monster, adjust health of characters
+  // and prevent player from moving onto the square
+  if (tile.type === 'monster' && tile.isAlive === true) {
+    const monster = tile;
+    const playerHealth = newState.player.fight(monster);
+    if (playerHealth <= 0) {
+      newState.gameState = GAME_STATE_DEATH;
+      document.removeEventListener('keydown', this.keyPressEvents);
+      newState.player.image = 'images/tombstone.gif';
+    }
+  } else {
+    newState.player.row = newRow;
+    newState.player.col = newCol;
+  }
+
+  return newState;
+}
+
+
+/**
+ * The project isn't using redux, so all state changes happen here.
+ *
+ * @class App
+ * @extends {Component}
+ */
 class App extends Component {
   constructor() {
     super();
@@ -24,83 +77,31 @@ class App extends Component {
       gameState: GAME_STATE_PLAYING,
       map: generateMap(),
       hudPlayerImage: 1,
-      player: {
-        row: 1,
-        col: 1,
-        maxHealth: 100,
-        currHealth: 100,
-        level: 1,
-        currExp: 0,
-        nextLevelExp: 100,
-        baseAttack: 1,
-        defense: 0,
-        currentDirection: DOWN,
-        weapon: {
-          type: 'weapon',
-          name: 'none',
-          image: 'images/empty.gif',
-          attack: 0,
-        },
-        shield: {
-          type: 'shield',
-          name: 'none',
-          image: 'images/empty.gif',
-          defense: 0,
-        },
-        getImage() {
-          return `images/hero1-${this.currentDirection}.gif`;
-        },
-        attack() {
-          const totalAttack = this.baseAttack + this.weapon.attack;
-          return Math.floor(totalAttack * ((Math.random() * (1.1 - 0.9)) + 0.9));
-        },
-        /* Returns false if the player has died */
-        fight(monster) {
-          if (this.currHealth > 0) {
-            monster.receiveDamage(this);
-            if (monster.isAlive) {
-              this.currHealth -= monster.attack;
-              if (this.currHealth < 0) {
-                this.currHealth = 0;
-              }
-            }
-          }
-          return this.currHealth;
-        },
-        increaseExperience(exp) {
-          this.currExp += exp;
-          if (this.currExp >= this.nextLevelExp) {
-            this.levelUp();
-          }
-        },
-        equipWeapon(weapon) {
-          this.weapon = weapon;
-        },
-        consumeHealthPotion(potion) {
-          this.currHealth += potion.health;
-          this.currHealth = this.currHealth > this.maxHealth ? this.maxHealth : this.currHealth;
-        },
-        levelUp() {
-          this.level += 1;
-          this.maxHealth += 20;
-          this.currExp = 0;
-          this.nextLevelExp *= 1.2;
-          this.currHealth = this.maxHealth;
-        },
-      },
+      player: getNewPlayer(),
     };
     this.tick = this.tick.bind(this);
   }
 
+  /**
+   * The method runs before this component gets rendered for the
+   * first time. We can add the event listener for movement keypresses here
+   *
+   * @memberOf App
+   */
   componentDidMount() {
-    /* This is before the component gets rendered for the first time
-       add some event listeners for keyboard presses
-    */
     document.addEventListener('keydown', this.keyPressEvents);
   }
 
 
-
+  /**
+   * The player position is set depending on the key pressed.
+   * The player's getImage() function will use the direction to determine
+   * which image to display.
+   *
+   * @param {string} direction
+   *
+   * @memberOf App
+   */
   setPlayerPosition(direction) {
     const newState = Object.assign({}, this.state);
     newState.player.currentDirection = direction;
@@ -110,6 +111,12 @@ class App extends Component {
   }
 
 
+  /**
+   * Updates the player image in the HUD on a set interval in
+   * order to give it an animation effect
+   *
+   * @memberOf App
+   */
   tick() {
     this.setState(prevState => ({
       hudPlayerImage: prevState.hudPlayerImage === 1 ? 2 : 1,
@@ -117,6 +124,16 @@ class App extends Component {
   }
 
 
+  /**
+   * User has pressed a directional key. We need to determine if the hero
+   * is allowed to move, and if there are any consumables on the tile
+   * he is moving to
+   *
+   * @param {number} relRow
+   * @param {number} relCol
+   *
+   * @memberOf App
+   */
   movePlayerPosition(relRow, relCol) {
     const moveToRow = this.state.player.row + relRow;
     const moveToCol = this.state.player.col + relCol;
@@ -126,43 +143,20 @@ class App extends Component {
       return;
     }
 
-    const newState = Object.assign({}, this.state);
-
-    const tileItem = newState.map[moveToRow][moveToCol];
-
-    // If the player is moving onto a health square, increase the players health
-    if (tileItem.type === 'health potion') {
-      newState.map[moveToRow][moveToCol] = f;
-      newState.player.consumeHealthPotion(tileItem);
-    }
-
-    // If the player is moving onto a weapon, assign the new weapon and increase the players attack
-    if (tileItem.type === 'weapon') {
-      newState.map[moveToRow][moveToCol] = f;
-      newState.player.equipWeapon(tileItem);
-    }
-
-    // If the player is moving onto a monster, adjust health of characters
-    // and prevent player from moving onto the square
-    if (tileItem.type === 'monster' &&
-        tileItem.isAlive === true) {
-      const monster = tileItem;
-      const playerHealth = newState.player.fight(monster);
-      if (playerHealth <= 0) {
-        newState.gameState = GAME_STATE_DEATH;
-        document.removeEventListener('keydown', this.keyPressEvents);
-        newState.player.image = 'images/tombstone.gif';
-      }
-    } else {
-      newState.player.row = moveToRow;
-      newState.player.col = moveToCol;
-    }
+    const tile = this.state.map[moveToRow][moveToCol];
+    const newState = checkTileAndMove(tile, this.state, [moveToRow, moveToCol]);
 
     this.setState({
       newState,
     });
   }
 
+
+  /**
+   * Allow both the WASD and arrow keys to be used
+   *
+   * @memberOf App
+   */
   keyPressEvents = (e) => {
     switch (e.keyCode) {
       case 65:// a
@@ -189,6 +183,7 @@ class App extends Component {
     }
   };
 
+
   render() {
     return (
       <div className="App">
@@ -210,5 +205,6 @@ class App extends Component {
     );
   }
 }
+
 
 export default App;

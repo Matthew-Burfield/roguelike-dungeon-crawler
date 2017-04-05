@@ -1,5 +1,5 @@
 import React from 'react';
-import { TILE_WIDTH, TILE_HEIGHT, FLOOR_TILE_IMAGE } from '../../utility';
+import { TILE_WIDTH, TILE_HEIGHT, FLOOR_TILE_IMAGE } from '../../Utility';
 
 
 const Tile = ({ col, player, opacity }) => {
@@ -14,13 +14,18 @@ const Tile = ({ col, player, opacity }) => {
     style.backgroundImage = `url(${FLOOR_TILE_IMAGE})`;
   }
 
+  const display = () => {
+    if (!col.type) return null; // This is for floors
+    if (col.type === 'monster') {
+      return <Monster monster={col} />;
+    }
+    return <img src={col.image} alt={col.type} />;
+  };
+
   return (
     <div className={col.type} style={style}>
       {player && <img src={player.getImage()} alt="X" />}
-      {!player && col.type === 'monster' &&
-        <Monster monster={col} />
-      }
-      {!player && col.type !== 'monster' && <img src={col.image} alt={col.type} />}
+      {!player && display(col)}
     </div>
   );
 };
@@ -28,13 +33,14 @@ const Tile = ({ col, player, opacity }) => {
 
 Tile.propTypes = {
   col: React.PropTypes.shape({
-    type: React.PropTypes.string.isRequired,
-    image: React.PropTypes.string.isRequired,
+    type: React.PropTypes.string,
+    image: React.PropTypes.string,
     name: React.PropTypes.string,
   }).isRequired,
   player: React.PropTypes.shape({
     row: React.PropTypes.number.isRequired,
     col: React.PropTypes.number.isRequired,
+    getImage: React.PropTypes.func.isRequired,
   }),
   opacity: React.PropTypes.number.isRequired,
 };
@@ -43,7 +49,9 @@ Tile.propTypes = {
 Tile.defaultProps = {
   player: undefined,
   col: {
-    name: '',
+    name: null,
+    type: null,
+    image: null,
   },
 };
 

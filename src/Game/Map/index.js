@@ -1,6 +1,6 @@
 import React from 'react';
 import Tile from './Tile';
-import { TILE_HEIGHT } from '../../utility';
+import { TILE_HEIGHT } from '../../Utility';
 
 
 const getVisibleTiles = (map, height, width, playerY, playerX) => {
@@ -94,6 +94,7 @@ Map.propTypes = {
   player: React.PropTypes.shape({
     row: React.PropTypes.number.isRequired,
     col: React.PropTypes.number.isRequired,
+    getImage: React.PropTypes.func.isRequired,
   }).isRequired,
 };
 
@@ -128,10 +129,13 @@ const Row = ({ row, player, mapReduce, opacity, playerCol }) => {
 Row.propTypes = {
   opacity: React.PropTypes.number.isRequired,
   playerCol: React.PropTypes.number.isRequired,
-  row: React.PropTypes.arrayOf(React.PropTypes.shape({
-    type: React.PropTypes.string.isRequired,
-    image: React.PropTypes.string.isRequired,
-  })).isRequired,
+  row: React.PropTypes.arrayOf(
+    React.PropTypes.shape({
+      type: React.PropTypes.string,
+      image: React.PropTypes.string,
+      name: React.PropTypes.string,
+    },
+  )).isRequired,
   mapReduce: React.PropTypes.shape({
     startRowIndex: React.PropTypes.number.isRequired,
     endRowIndex: React.PropTypes.number.isRequired,
@@ -141,12 +145,18 @@ Row.propTypes = {
   player: React.PropTypes.shape({
     row: React.PropTypes.number.isRequired,
     col: React.PropTypes.number.isRequired,
+    getImage: React.PropTypes.func.isRequired,
   }),
 };
 
 
 Row.defaultProps = {
   player: undefined,
+  row: [{
+    type: null,
+    image: null,
+    name: null,
+  }],
 };
 
 
