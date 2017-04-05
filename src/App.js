@@ -23,9 +23,9 @@ import getNewPlayer from './Utility/player';
  * Helper function to update the hero position and action any
  * consumable items if the new tile has any
  *
- * @param {object} tile 
- * @param {object} state 
- * @param {array} newCoords 
+ * @param {object} tile
+ * @param {object} state
+ * @param {array} newCoords
  * @returns {object} newState
  */
 function checkTileAndMove(tile, state, newCoords) {
@@ -47,10 +47,14 @@ function checkTileAndMove(tile, state, newCoords) {
 
   // If the player is moving onto a monster, adjust health of characters
   // and prevent player from moving onto the square
-  if (tile.type === 'monster' && tile.isAlive === true) {
+  if (tile.type === 'monster') {
     const monster = tile;
-    const playerHealth = newState.player.fight(monster);
-    if (playerHealth <= 0) {
+    newState.player.fight(monster);
+
+    if (monster.isDead()) {
+      newState.map[newRow][newCol] = f;
+    }
+    if (newState.player.isDead()) {
       newState.gameState = GAME_STATE_DEATH;
       document.removeEventListener('keydown', this.keyPressEvents);
       newState.player.image = 'images/tombstone.gif';
@@ -145,6 +149,11 @@ class App extends Component {
 
     const tile = this.state.map[moveToRow][moveToCol];
     const newState = checkTileAndMove(tile, this.state, [moveToRow, moveToCol]);
+
+    // remove the key event listeners if the player dies
+    if (newState.player.isDead()) {
+      document.removeEventListener('keydown', this.keyPressEvents);
+    }
 
     this.setState({
       newState,

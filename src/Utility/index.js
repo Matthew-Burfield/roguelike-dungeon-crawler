@@ -28,21 +28,19 @@ export const monster = {
     this.currentHealth = health;
     this.image = `images/monster_${level}.gif`;
     this.type = 'monster';
-    this.isAlive = true;
     this.attack = level * health;
   },
   receiveDamage(player) {
-    if (this.isAlive) {
+    if (!this.isDead()) {
       this.currentHealth -= player.attack();
-      this.isDead(player);
+      if (this.isDead()) {
+        this.image = 'images/empty.gif';
+        player.increaseExperience(this.level * 50);
+      }
     }
   },
-  isDead(player) {
-    if (this.currentHealth <= 0) {
-      this.isAlive = false;
-      this.image = 'images/floor.gif';
-      player.increaseExperience(this.level * 50);
-    }
+  isDead() {
+    return this.currentHealth <= 0;
   },
 };
 

@@ -34,14 +34,11 @@ const player = {
   fight(monster) {
     if (this.currHealth > 0) {
       monster.receiveDamage(this);
-      if (monster.isAlive) {
-        this.currHealth -= monster.attack;
-        if (this.currHealth < 0) {
-          this.currHealth = 0;
-        }
+      this.currHealth -= monster.attack;
+      if (this.currHealth < 0) {
+        this.currHealth = 0;
       }
     }
-    return this.currHealth;
   },
   increaseExperience(exp) {
     this.currExp += exp;
@@ -62,6 +59,9 @@ const player = {
     this.currExp = 0;
     this.nextLevelExp *= 1.2;
     this.currHealth = this.maxHealth;
+  },
+  isDead() {
+    return this.currHealth <= 0;
   },
 };
 
