@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './index.css';
-import { CONTAINER_WIDTH } from '../../Utility';
+import { CONTAINER_WIDTH, IMAGE_PATH } from '../../Utility';
 import EquipmentSlot from './EquipmentSlot';
 import Bar from './Bar';
 
@@ -17,7 +17,7 @@ class HUD extends React.Component {
 
   render() {
     const { player } = this.props;
-    const heroImage = `images/hero1-hui${this.props.heroImage}.gif`;
+    const heroImage = `${IMAGE_PATH}/hero/hero1-hui${this.props.heroImage}.gif`;
     const HUD_WIDTH = CONTAINER_WIDTH + 50;
 
     return (
@@ -39,7 +39,7 @@ class HUD extends React.Component {
         </div>
         <div style={{ marginTop: 10 }}>
           <Bar
-            color="linear-gradient(#66BB6A, #1B5E20)"
+            color="linear-gradient(#64DD17, #1B5E20)"
             height={20}
             width={HUD_WIDTH}
             maxVal={player.maxHealth}

@@ -1,6 +1,3 @@
-// Player color isn't really relevant now that we're using an image
-export const playerColor = '#FF5722';
-
 // tileWidth and tileHeight can't really be changed now that
 // we're using pixel tiles to display objects.
 export const TILE_WIDTH = '30px';
@@ -18,17 +15,40 @@ export const RIGHT = 'RIGHT';
 export const UP = 'UP';
 export const DOWN = 'DOWN';
 
-export const FLOOR_TILE_IMAGE = 'images/floor.gif';
+export const IMAGE_PATH = 'images';
+export const FLOOR_TILE_IMAGE = `${IMAGE_PATH}/floor.gif`;
 
 export const monster = {
-  init(level, health, name) {
-    this.name = name;
+  type: 'monster',
+  init(level) {
+    this.name = this.initName(level);
     this.level = level;
-    this.totalHealth = health;
-    this.currentHealth = health;
-    this.image = `images/monster_${level}.gif`;
-    this.type = 'monster';
-    this.attack = level * health;
+    this.totalHealth = this.initHealth(level);
+    this.currentHealth = this.totalHealth;
+    this.image = `${IMAGE_PATH}/monsters/monster_${level}.gif`;
+    this.attack = this.initAttack(level);
+  },
+  initName(level) {
+    switch (level) {
+      case 1:
+        return 'grimer';
+      case 2:
+        return 'mini grim';
+      case 3:
+        return 'vampire bat';
+      case 4:
+        return 'evil elf';
+      case 5:
+        return 'crazed devil bat';
+      default:
+        return 'Add name to monster initName function';
+    }
+  },
+  initHealth(level) {
+    return level * 20;
+  },
+  initAttack(level) {
+    return level * 5;
   },
   receiveDamage(player) {
     if (!this.isDead()) {
@@ -44,20 +64,34 @@ export const monster = {
   },
 };
 
+export const weapon = {
+  type: 'weapon',
+  init(name, attackValue) {
+    const imageVal = `${IMAGE_PATH}/weapons/${name.toLowerCase().replace(' ', '_')}.gif`;
+    this.name = name;
+    this.image = imageVal;
+    this.attack = attackValue;
+  },
+};
+
+// health potion
+export const healthPotion = {
+  type: 'health potion',
+  image: `${IMAGE_PATH}/consumables/health_potion.gif`,
+  init(health) {
+    this.health = health;
+  },
+};
+
 /* Tile Values */
 
 // (blocking) wall
 export const b = {
   type: 'wall',
-  image: 'images/wall.gif',
+  image: `${IMAGE_PATH}/wall.gif`,
 };
 
 // floor
 export const f = {};
 
-// health potion
-export const h = {
-  type: 'health potion',
-  image: 'images/health_potion.gif',
-  health: 10,
-};
+

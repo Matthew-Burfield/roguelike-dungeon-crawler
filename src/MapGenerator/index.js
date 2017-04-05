@@ -1,5 +1,5 @@
 import NewDungeon from 'random-dungeon-generator';
-import { monster, b, f, h } from '../Utility';
+import { b, f } from '../Utility';
 
 
 /**
@@ -21,31 +21,7 @@ const generateMap = () => {
   const map = getMap().map(row => row.map(col => col === 1 ? b : f));
   /* eslint-enable no-confusing-arrow */
 
-  const mapItems = [];
-
-  // // Add health potions to map
-  const numHealthPotions = 10;
-  for (let i = 0; i < numHealthPotions; i += 1) {
-    mapItems.push(h);
-  }
-
-
-  // // Add weapons to the map
-  const w = {
-    type: 'weapon',
-    name: 'Pocket Knife',
-    image: 'images/dagger.gif',
-    attack: 5,
-  };
-  mapItems.push(w);
-
-  // Add a couple of monsters to the map
-  const numMonsters = 10;
-  for (let i = 0; i < numMonsters; i += 1) {
-    const m = Object.create(monster);
-    m.init(1, 3, 'ghost');
-    mapItems.push(m);
-  }
+  const mapItems = getLevelItems(level);
 
   while (mapItems.length > 0) {
     const randomRow = randomIndexBetweenValues(1, map.length - 2);

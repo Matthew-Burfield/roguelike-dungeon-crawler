@@ -1,4 +1,4 @@
-import { DOWN } from './index';
+import { DOWN, IMAGE_PATH } from './index';
 
 const player = {
   row: 1,
@@ -14,17 +14,17 @@ const player = {
   weapon: {
     type: 'weapon',
     name: 'none',
-    image: 'images/empty.gif',
+    image: `${IMAGE_PATH}/empty.gif`,
     attack: 0,
   },
   shield: {
     type: 'shield',
     name: 'none',
-    image: 'images/empty.gif',
+    image: `${IMAGE_PATH}/empty.gif`,
     defense: 0,
   },
   getImage() {
-    return `images/hero1-${this.currentDirection}.gif`;
+    return `${IMAGE_PATH}/hero/hero1-${this.currentDirection}.gif`;
   },
   attack() {
     const totalAttack = this.baseAttack + this.weapon.attack;
