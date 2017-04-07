@@ -236,6 +236,7 @@ class App extends Component {
       <div className="App">
         <div className="App-header">
           <h2>Rogue-like Dungeon Crawler</h2>
+          <h4>Level {this.state.level}</h4>
         </div>
         <Map
           map={this.state.dungeon}
