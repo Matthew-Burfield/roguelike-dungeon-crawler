@@ -5,6 +5,7 @@ export const TILE_HEIGHT = '30px';
 
 export const GAME_STATE_PLAYING = 'PLAYING';
 export const GAME_STATE_START_MENU = 'START_MENU';
+export const GAME_STATE_WIN = 'WIN';
 export const GAME_STATE_DEATH = 'DEATH';
 
 export const CONTAINER_WIDTH = 330;
@@ -18,66 +19,89 @@ export const DOWN = 'DOWN';
 export const IMAGE_PATH = 'images';
 export const FLOOR_TILE_IMAGE = `${IMAGE_PATH}/floor.gif`;
 
-export const monster = {
-  type: 'monster',
-  init(level) {
-    this.name = this.initName(level);
-    this.level = level;
-    this.totalHealth = this.initHealth(level);
-    this.currentHealth = this.totalHealth;
-    this.image = `${IMAGE_PATH}/monsters/monster_${level}.gif`;
-    this.attack = this.initAttack(level);
-  },
-  initName(level) {
-    switch (level) {
-      case 1:
-        return 'grimer';
-      case 2:
-        return 'mini grim';
-      case 3:
-        return 'vampire bat';
-      case 4:
-        return 'evil elf';
-      case 5:
-        return 'crazed devil bat';
-      default:
-        return 'Add name to monster initName function';
-    }
-  },
-  initHealth(level) {
-    return level * 20;
-  },
-  initAttack(level) {
-    return level * 5;
-  },
-  receiveDamage(player) {
+export const TYPES = {
+  WEAPON: 'weapon',
+  SHIELD: 'shield',
+  HEALTH_POTION: 'health potion',
+  WALL: 'wall',
+  MONSTER: 'monster',
+  BOSS: 'boss',
+  STAIRWELL: 'stairwell',
+};
+
+// Generic object for monsters and bosses
+const badGuy = {
+  exp: 0,
+  receiveDamage(playerAttackDamage) {
     if (!this.isDead()) {
-      this.currentHealth -= player.attack();
+      this.currentHealth -= playerAttackDamage;
       if (this.isDead()) {
         this.image = 'images/empty.gif';
-        player.increaseExperience(this.level * 50);
+        return this.exp;
       }
     }
+    return 0;
   },
   isDead() {
     return this.currentHealth <= 0;
   },
 };
 
+const getImagePath = (name, type) => {
+  const imageName = name.toLowerCase().replace(/\s/g, '_');
+  return `${IMAGE_PATH}/${type}/${imageName}.gif`;
+};
+
+export const monster = Object.create(badGuy);
+monster.type = TYPES.MONSTER;
+monster.init = function init(name, level, health, attack, exp) {
+  const image = getImagePath(name, this.type);
+  this.name = name;
+  this.level = level;
+  this.totalHealth = health;
+  this.currentHealth = health;
+  this.image = image;
+  this.attack = attack;
+  this.exp = exp;
+};
+
+export const boss = Object.create(badGuy);
+boss.type = TYPES.BOSS;
+boss.init = function init(name, level, health, attack, exp) {
+  const image = getImagePath(name, this.type);
+  this.name = name;
+  this.level = level;
+  this.totalHealth = health;
+  this.currentHealth = health;
+  this.image = image;
+  this.attack = attack;
+  this.exp = exp;
+};
+
 export const weapon = {
-  type: 'weapon',
+  type: TYPES.WEAPON,
   init(name, attackValue) {
-    const imageVal = `${IMAGE_PATH}/weapons/${name.toLowerCase().replace(' ', '_')}.gif`;
+    const image = getImagePath(name, this.type);
     this.name = name;
-    this.image = imageVal;
+    this.image = image;
     this.attack = attackValue;
+  },
+};
+
+export const shield = {
+  type: TYPES.SHIELD,
+  init(name, defenseValue) {
+    const image = getImagePath(name, this.type);
+    this.name = name;
+    this.image = image;
+    this.defense = defenseValue;
   },
 };
 
 // health potion
 export const healthPotion = {
-  type: 'health potion',
-  image: `${IMAGE_PATH}/consumables/health_potion.gif`,
+  type: TYPES.HEALTH_POTION,
+  image: `${IMAGE_PATH}/consumable/health_potion.gif`,
   init(health) {
     this.health = health;
   },
@@ -86,12 +110,15 @@ export const healthPotion = {
 /* Tile Values */
 
 // (blocking) wall
-export const b = {
-  type: 'wall',
+export const wall = {
+  type: TYPES.WALL,
   image: `${IMAGE_PATH}/wall.gif`,
 };
 
 // floor
-export const f = {};
+export const floor = {};
 
-
+export const stairwell = {
+  type: TYPES.STAIRWELL,
+  image: `${IMAGE_PATH}/stairwell.gif`,
+};

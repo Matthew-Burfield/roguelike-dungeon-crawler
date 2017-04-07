@@ -16,8 +16,8 @@ const Tile = ({ col, player, opacity }) => {
 
   const display = () => {
     if (!col.type) return null; // This is for floors
-    if (col.type === 'monster') {
-      return <Monster monster={col} />;
+    if (col.type === 'monster' || col.type === 'boss') {
+      return <Monster monster={col} healthColor={col.type === 'monster' ? 'green' : 'yellow'} />;
     }
     return <img src={col.image} alt={col.type} />;
   };
@@ -56,14 +56,14 @@ Tile.defaultProps = {
 };
 
 
-const Monster = ({ monster }) =>
+const Monster = ({ monster, healthColor }) =>
   <div>
     <span>
       <div
         style={{
           height: '5px',
           width: `${(monster.currentHealth / monster.totalHealth) * 30}px`,
-          backgroundColor: 'green',
+          backgroundColor: healthColor,
           position: 'absolute',
         }}
       />
@@ -79,6 +79,7 @@ Monster.propTypes = {
     image: React.PropTypes.string.isRequired,
     name: React.PropTypes.string.isRequired,
   }).isRequired,
+  healthColor: React.PropTypes.string.isRequired,
 };
 
 

@@ -4,10 +4,12 @@ import React, { Component } from 'react';
 import './App.css';
 import Map from './Game/Map';
 import HUD from './Game/HUD';
-import generateMap from './MapGenerator';
-import { f,
+import generateDungeon from './MapGenerator';
+import { floor,
+  stairwell,
   GAME_STATE_PLAYING,
   // GAME_STATE_START_MENU,
+  GAME_STATE_WIN,
   GAME_STATE_DEATH,
   CONTAINER_WIDTH,
   CONTAINER_HEIGHT,
@@ -15,6 +17,7 @@ import { f,
   RIGHT,
   UP,
   DOWN,
+  TYPES,
 } from './Utility';
 import getNewPlayer from './Utility/player';
 
@@ -33,36 +36,52 @@ function checkTileAndMove(tile, state, newCoords) {
   const newRow = newCoords[0];
   const newCol = newCoords[1];
 
+  switch (tile.type) {
   // If the player is moving onto a health square, increase the players health
-  if (tile.type === 'health potion') {
-    newState.map[newRow][newCol] = f;
-    newState.player.consumeHealthPotion(tile);
-  }
+    case TYPES.HEALTH_POTION:
+      newState.dungeon[newRow][newCol] = floor;
+      newState.player.consumeHealthPotion(tile);
+      break;
 
   // If the player is moving onto a weapon, assign the new weapon and increase the players attack
-  if (tile.type === 'weapon') {
-    newState.map[newRow][newCol] = f;
-    newState.player.equipWeapon(tile);
-  }
+    case TYPES.WEAPON:
+    case TYPES.SHIELD:
+      newState.dungeon[newRow][newCol] = floor;
+      newState.player.equipItem(tile);
+      break;
 
   // If the player is moving onto a monster, adjust health of characters
   // and prevent player from moving onto the square
-  if (tile.type === 'monster') {
-    const monster = tile;
-    newState.player.fight(monster);
+    case TYPES.BOSS:
+      newState.player.fight(tile);
 
-    if (monster.isDead()) {
-      newState.map[newRow][newCol] = f;
-    }
-    if (newState.player.isDead()) {
-      newState.gameState = GAME_STATE_DEATH;
-      document.removeEventListener('keydown', this.keyPressEvents);
-      newState.player.image = 'images/tombstone.gif';
-    }
-  } else {
-    newState.player.row = newRow;
-    newState.player.col = newCol;
+      if (tile.isDead()) {
+        newState.dungeon[newRow][newCol] = stairwell;
+      }
+
+      if (newState.player.isDead()) {
+        newState.gameState = GAME_STATE_DEATH;
+      }
+      return newState;
+
+  // If the player is moving onto a monster, adjust health of characters
+  // and prevent player from moving onto the square
+    case TYPES.MONSTER:
+      newState.player.fight(tile);
+
+      if (tile.isDead()) {
+        newState.dungeon[newRow][newCol] = floor;
+      }
+      if (newState.player.isDead()) {
+        newState.gameState = GAME_STATE_DEATH;
+      }
+      return newState;
+
+    default:
   }
+
+  newState.player.row = newRow;
+  newState.player.col = newCol;
 
   return newState;
 }
@@ -79,7 +98,8 @@ class App extends Component {
     super();
     this.state = {
       gameState: GAME_STATE_PLAYING,
-      map: generateMap(),
+      level: 1,
+      dungeon: generateDungeon(1),
       hudPlayerImage: 1,
       player: getNewPlayer(),
     };
@@ -143,11 +163,29 @@ class App extends Component {
     const moveToCol = this.state.player.col + relCol;
 
     // Don't update the position if player will be moving onto a blocking square
-    if (this.state.map[moveToRow][moveToCol].type === 'wall') {
+    if (this.state.dungeon[moveToRow][moveToCol].type === TYPES.WALL) {
       return;
     }
 
-    const tile = this.state.map[moveToRow][moveToCol];
+    if (this.state.dungeon[moveToRow][moveToCol].type === TYPES.STAIRWELL) {
+      if (this.state.level + 1 > 3) {
+        this.setState({
+          gameState: GAME_STATE_WIN,
+        });
+      } else {
+        const newPlayerState = Object.assign({}, this.state.player);
+        newPlayerState.row = 1;
+        newPlayerState.col = 1;
+        this.setState(prevState => ({
+          level: prevState.level + 1,
+          dungeon: generateDungeon(prevState.level + 1),
+          player: newPlayerState,
+        }));
+        return;
+      }
+    }
+
+    const tile = this.state.dungeon[moveToRow][moveToCol];
     const newState = checkTileAndMove(tile, this.state, [moveToRow, moveToCol]);
 
     // remove the key event listeners if the player dies
@@ -200,7 +238,7 @@ class App extends Component {
           <h2>Rogue-like Dungeon Crawler</h2>
         </div>
         <Map
-          map={this.state.map}
+          map={this.state.dungeon}
           player={this.state.player}
           width={CONTAINER_WIDTH}
           height={CONTAINER_HEIGHT}

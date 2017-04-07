@@ -12,13 +12,29 @@ class HUD extends React.Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.interval);
+    this.removeInterval(this.interval);
+  }
+
+  getHeroImage() {
+    if (this.props.player.isDead()) {
+      this.removeInterval();
+      return `${IMAGE_PATH}/tombstone.gif`;
+    }
+    return `${IMAGE_PATH}/hero/hero1-hui${this.props.heroImage}.gif`;
+  }
+
+  removeInterval() {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
   }
 
   render() {
     const { player } = this.props;
-    const heroImage = `${IMAGE_PATH}/hero/hero1-hui${this.props.heroImage}.gif`;
+    const heroImage = this.getHeroImage();
     const HUD_WIDTH = CONTAINER_WIDTH + 50;
+    const totalAttack = player.baseAttack + player.weapon.attack;
+    const totalDefense = player.baseDefense + player.shield.defense;
 
     return (
       <div id="container" style={{ width: HUD_WIDTH, margin: '10px auto', display: 'flex', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column' }}>
@@ -30,6 +46,8 @@ class HUD extends React.Component {
           <EquipmentSlot id="playerSquare" width={70} height={70} image={heroImage} altText="hero">
             <p>Level: {player.level}</p>
             <p>Health: {player.currHealth} / {player.maxHealth}</p>
+            <p>Attack: {totalAttack} ({player.baseAttack} + {player.weapon.attack})</p>
+            <p>Defense: {totalDefense} ({player.baseDefense} + {player.shield.defense})</p>
             <p>EXP: {player.currExp} / {player.nextLevelExp}</p>
           </EquipmentSlot>
           <EquipmentSlot id="shieldSquare" width={40} height={40} image={player.shield.image} altText="shield">
@@ -66,6 +84,8 @@ HUD.propTypes = {
     level: React.PropTypes.number.isRequired,
     currExp: React.PropTypes.number.isRequired,
     nextLevelExp: React.PropTypes.number.isRequired,
+    baseAttack: React.PropTypes.number.isRequired,
+    baseDefense: React.PropTypes.number.isRequired,
     weapon: React.PropTypes.shape({
       type: React.PropTypes.string.isRequired,
       name: React.PropTypes.string.isRequired,
@@ -76,6 +96,7 @@ HUD.propTypes = {
       name: React.PropTypes.string.isRequired,
       defense: React.PropTypes.number.isRequired,
     }).isRequired,
+    isDead: React.PropTypes.func.isRequired,
   }).isRequired,
   heroImage: React.PropTypes.number.isRequired,
   tick: React.PropTypes.func.isRequired,
