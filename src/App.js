@@ -291,7 +291,11 @@ class App extends Component {
           heroImage={this.state.hudPlayerImage}
           tick={this.tick}
         />
-        <DeathScreen startGame={this.startGame} mainMenu={this.initiateMenuScreen} top={this.state.gameProperties.deathScreenTop} />
+        <DeathScreen
+          startGame={this.startGame}
+          mainMenu={this.initiateMenuScreen}
+          top={this.state.gameProperties.deathScreenTop}
+        />
         <NewGameScreen
           gameState={this.state.gameState}
           startGame={this.startGame}
