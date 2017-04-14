@@ -20,6 +20,8 @@ export const DOWN = 'DOWN';
 export const IMAGE_PATH = 'images';
 export const FLOOR_TILE_IMAGE = `${IMAGE_PATH}/floor.gif`;
 
+export const LEVEL_UP_SEQUENCE_LENGTH = 5;
+
 export const TYPES = {
   WEAPON: 'weapon',
   SHIELD: 'shield',
