@@ -5,6 +5,7 @@ export const TILE_HEIGHT = '30px';
 
 export const GAME_STATE_PLAYING = 'PLAYING';
 export const GAME_STATE_START_MENU = 'START_MENU';
+export const GAME_STATE_START_MENU_TRANSITION = 'START_MENU_TRANSITION';
 export const GAME_STATE_WIN = 'WIN';
 export const GAME_STATE_DEATH = 'DEATH';
 

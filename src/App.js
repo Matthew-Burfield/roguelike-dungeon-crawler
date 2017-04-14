@@ -8,7 +8,8 @@ import generateDungeon from './MapGenerator';
 import { floor,
   stairwell,
   GAME_STATE_PLAYING,
-  // GAME_STATE_START_MENU,
+  GAME_STATE_START_MENU,
+  GAME_STATE_START_MENU_TRANSITION,
   GAME_STATE_WIN,
   GAME_STATE_DEATH,
   CONTAINER_WIDTH,
@@ -18,9 +19,9 @@ import { floor,
   UP,
   DOWN,
   TYPES,
-  IMAGE_PATH,
 } from './Utility';
 import getNewPlayer from './Utility/player';
+import NewGame from './Game/Models/NewGame';
 
 
 /**
@@ -98,13 +99,14 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      gameState: GAME_STATE_PLAYING,
+      gameState: GAME_STATE_START_MENU,
       level: 1,
       dungeon: generateDungeon(1),
       hudPlayerImage: 1,
       player: getNewPlayer(),
     };
     this.tick = this.tick.bind(this);
+    this.startGame = this.startGame.bind(this);
   }
 
   /**
@@ -132,6 +134,26 @@ class App extends Component {
     newState.player.currentDirection = direction;
     this.setState({
       newState,
+    });
+  }
+
+
+
+  getStartMenuHeight() {
+    if (this.state.gameState === GAME_STATE_START_MENU) {
+      return '100%';
+    }
+    return '0px';
+  }
+
+
+  startGame() {
+    const startLevel = 1;
+    this.setState({
+      level: startLevel,
+      dungeon: generateDungeon(startLevel),
+      player: getNewPlayer(),
+      gameState: GAME_STATE_PLAYING,
     });
   }
 
@@ -233,6 +255,7 @@ class App extends Component {
 
 
   render() {
+    const startMenuHeight = this.getStartMenuHeight();
     return (
       <div className="App" style={{ position: 'relative' }}>
         <div className="App-header">
@@ -250,22 +273,10 @@ class App extends Component {
           heroImage={this.state.hudPlayerImage}
           tick={this.tick}
         />
-        <div className="startMenu" style={{ position: 'absolute', backgroundColor: 'red', opacity: 1, top: 0, width: '100%', height: '100%' }}>
-          <div style={{ margin: '20px auto', maxWidth: 500 }}>
-            <h1>Welcome to Rogue-like Dungeon Crawler</h1>
-            <p>Help dominic the barbarian fight his way through 3 levels on dungeons</p>
-            <img src={`${IMAGE_PATH}/hero/hero1-hui1.gif`} alt="hero" />
-            <p>Use:</p>
-            <p>
-              <img src={`${IMAGE_PATH}/wasd_pad.gif`} alt="wasd_pad" /> or
-               <img src={`${IMAGE_PATH}/directional_pad.gif`} alt="directional_pad" />
-            </p>
-            <p>There is a Boss monster protecting the entrance to each level, you'll need to hone your skills before you are able to take them out!</p>
-            <p>Be on the lookout for weapons to help you slay those monsters!</p>
-            <br />
-            <button onClick={() => console.log('clicked')}>Start Game!</button>
-          </div>
-        </div>
+        {
+          this.state.gameState === GAME_STATE_START_MENU &&
+          <NewGame startGame={this.startGame} height={startMenuHeight} />
+        }
       </div>
     );
   }
