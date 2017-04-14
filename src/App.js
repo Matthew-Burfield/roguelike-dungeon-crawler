@@ -112,6 +112,7 @@ class App extends Component {
     };
     this.tick = this.tick.bind(this);
     this.startGame = this.startGame.bind(this);
+    this.initiateMenuScreen = this.initiateMenuScreen.bind(this);
   }
 
 
@@ -140,6 +141,18 @@ class App extends Component {
         mapOpacity: 0,
         startMenuTop: -700,
         deathScreenTop: 0,
+      },
+    });
+  }
+
+
+  initiateMenuScreen() {
+    this.setState({
+      gameState: GAME_STATE_START_MENU,
+      gameProperties: {
+        mapOpacity: 0,
+        startMenuTop: 0,
+        deathScreenTop: -700,
       },
     });
   }
@@ -278,12 +291,12 @@ class App extends Component {
           heroImage={this.state.hudPlayerImage}
           tick={this.tick}
         />
+        <DeathScreen startGame={this.startGame} mainMenu={this.initiateMenuScreen} top={this.state.gameProperties.deathScreenTop} />
         <NewGameScreen
           gameState={this.state.gameState}
           startGame={this.startGame}
           top={this.state.gameProperties.startMenuTop}
         />
-        <DeathScreen startGame={this.startGame} top={this.state.gameProperties.deathScreenTop} />
       </div>
     );
   }
