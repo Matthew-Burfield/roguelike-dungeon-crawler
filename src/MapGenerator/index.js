@@ -164,11 +164,14 @@ const generateDungeon = (level) => {
 
   const mapWithItemsAndMonsters = generateLevel(genericMap, level);
 
+  const dungeonWall = Object.create(wall);
+  dungeonWall.init(level);
+
   // Items and monsters have been added, now add wall and floor tiles
   /* eslint-disable no-confusing-arrow */
   return mapWithItemsAndMonsters.map(row => row.map((col) => {
     if (col === 1) {
-      return wall;
+      return dungeonWall;
     } else if (typeof col === 'number') {
       // Only return floor (an empty object), if there isn't already
       // an object assigned to this tile. I.e. There are no items or monsters

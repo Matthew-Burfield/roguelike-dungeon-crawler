@@ -113,7 +113,9 @@ export const healthPotion = {
 // (blocking) wall
 export const wall = {
   type: TYPES.WALL,
-  image: `${IMAGE_PATH}/wall.gif`,
+  init(dungeonLevel) {
+    this.image = `${IMAGE_PATH}/wall${dungeonLevel}.gif`;
+  },
 };
 
 // floor

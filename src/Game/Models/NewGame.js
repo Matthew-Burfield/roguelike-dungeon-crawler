@@ -4,7 +4,7 @@ import { IMAGE_PATH } from '../../Utility';
 import Button from '../../Utility/Button';
 
 const NewGameScreen = ({ startGame, top }) =>
-  <div key="menu" className="menu" style={{ position: 'absolute', backgroundColor: 'rgb(45, 46, 41)', top, width: '100%', height: '100%', transition: 'top 0.5s cubic-bezier(1.000, -0.530, 0.405, 1.425)' }}>
+  <div key="menu" className="menu" style={{ position: 'absolute', backgroundColor: '#000', top, width: '100%', height: '100%', transition: 'top 0.5s cubic-bezier(1.000, -0.530, 0.405, 1.425)' }}>
     <div style={{ margin: '20px auto', maxWidth: 500 }}>
       <h1>Welcome to Rogue-like Dungeon Crawler</h1>
       <p>Help dominic the barbarian fight his way through 3 levels on dungeons</p>
