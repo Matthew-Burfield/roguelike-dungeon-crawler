@@ -89,6 +89,6 @@ const player = {
   },
 };
 
-const getNewPlayer = () => player;
+const getNewPlayer = () => Object.assign({}, player);
 
 export default getNewPlayer;

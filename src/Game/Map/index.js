@@ -52,7 +52,7 @@ const Map = ({ map, player, height, width, mapOpacity }) => {
 
 
   return (
-    <div className="gameMap" style={{ margin: 'auto', height: `${height}px`, width: `${width}px`, opacity: mapOpacity, transition: 'opacity 0.5s ease-in') }}>
+    <div className="gameMap" style={{ margin: 'auto', height: `${height}px`, width: `${width}px`, opacity: mapOpacity, transition: 'opacity 1s ease-in', transitionDelay: '1s' }}>
       {map.reduce((result, row, index) => {
         if (index >= mapReduce.startRowIndex && index <= mapReduce.endRowIndex) {
           const opacity = 1 / (Math.abs(index - player.row) || 1);

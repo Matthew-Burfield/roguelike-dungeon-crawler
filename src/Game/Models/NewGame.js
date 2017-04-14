@@ -3,7 +3,7 @@ import React from 'react';
 import { IMAGE_PATH } from '../../Utility';
 import Button from '../../Utility/Button';
 
-const NewGame = ({ startGame, top }) =>
+const NewGameScreen = ({ startGame, top }) =>
   <div key="menu" className="menu" style={{ position: 'absolute', backgroundColor: 'rgb(45, 46, 41)', top, width: '100%', height: '100%', transition: 'top 0.5s cubic-bezier(1.000, -0.530, 0.405, 1.425)' }}>
     <div style={{ margin: '20px auto', maxWidth: 500 }}>
       <h1>Welcome to Rogue-like Dungeon Crawler</h1>
@@ -24,9 +24,9 @@ const NewGame = ({ startGame, top }) =>
     </div>
   </div>;
 
-NewGame.propTypes = {
+NewGameScreen.propTypes = {
   startGame: React.PropTypes.func.isRequired,
   top: React.PropTypes.number.isRequired,
 };
 
-export default NewGame;
+export default NewGameScreen;

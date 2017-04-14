@@ -4,7 +4,8 @@ import './App.css';
 import Map from './Game/Map';
 import HUD from './Game/HUD';
 import generateDungeon from './MapGenerator';
-import { floor,
+import {
+  floor,
   stairwell,
   GAME_STATE_PLAYING,
   GAME_STATE_START_MENU,
@@ -19,7 +20,8 @@ import { floor,
   TYPES,
 } from './Utility';
 import getNewPlayer from './Utility/player';
-import NewGame from './Game/Models/NewGame';
+import NewGameScreen from './Game/Models/NewGame';
+import DeathScreen from './Game/Models/Death';
 
 
 /**
@@ -98,6 +100,11 @@ class App extends Component {
     super();
     this.state = {
       gameState: GAME_STATE_START_MENU,
+      gameProperties: {
+        mapOpacity: 1,
+        startMenuTop: 0,
+        deathScreenTop: -700,
+      },
       level: 1,
       dungeon: generateDungeon(1),
       hudPlayerImage: 1,
@@ -105,16 +112,6 @@ class App extends Component {
     };
     this.tick = this.tick.bind(this);
     this.startGame = this.startGame.bind(this);
-  }
-
-  /**
-   * The method runs before this component gets rendered for the
-   * first time. We can add the event listener for movement keypresses here
-   *
-   * @memberOf App
-   */
-  componentDidMount() {
-    document.addEventListener('keydown', this.keyPressEvents);
   }
 
 
@@ -136,22 +133,31 @@ class App extends Component {
   }
 
 
-
-  getStartMenuHeight() {
-    if (this.state.gameState === GAME_STATE_START_MENU) {
-      return 0;
-    }
-    return -700;
+  initiateDeathScreen() {
+    this.setState({
+      gameState: GAME_STATE_DEATH,
+      gameProperties: {
+        mapOpacity: 0,
+        startMenuTop: -700,
+        deathScreenTop: 0,
+      },
+    });
   }
 
 
   startGame() {
     const startLevel = 1;
+    document.addEventListener('keydown', this.keyPressEvents);
     this.setState({
       level: startLevel,
       dungeon: generateDungeon(startLevel),
       player: getNewPlayer(),
       gameState: GAME_STATE_PLAYING,
+      gameProperties: {
+        mapOpacity: 1,
+        startMenuTop: -700,
+        deathScreenTop: -700,
+      },
     });
   }
 
@@ -209,14 +215,15 @@ class App extends Component {
     const tile = this.state.dungeon[moveToRow][moveToCol];
     const newState = checkTileAndMove(tile, this.state, [moveToRow, moveToCol]);
 
-    // remove the key event listeners if the player dies
-    if (newState.player.isDead()) {
-      document.removeEventListener('keydown', this.keyPressEvents);
-    }
-
     this.setState({
       newState,
     });
+
+    // remove the key event listeners if the player dies
+    if (newState.player.isDead()) {
+      document.removeEventListener('keydown', this.keyPressEvents);
+      this.initiateDeathScreen();
+    }
   }
 
 
@@ -264,18 +271,19 @@ class App extends Component {
           player={this.state.player}
           width={CONTAINER_WIDTH}
           height={CONTAINER_HEIGHT}
-          mapOpacity={1}
+          mapOpacity={this.state.gameProperties.mapOpacity}
         />
         <HUD
           player={this.state.player}
           heroImage={this.state.hudPlayerImage}
           tick={this.tick}
         />
-        <NewGame
+        <NewGameScreen
           gameState={this.state.gameState}
           startGame={this.startGame}
-          top={this.getStartMenuHeight()}
+          top={this.state.gameProperties.startMenuTop}
         />
+        <DeathScreen startGame={this.startGame} top={this.state.gameProperties.deathScreenTop} />
       </div>
     );
   }
