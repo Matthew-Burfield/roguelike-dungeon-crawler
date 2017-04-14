@@ -127,3 +127,41 @@ export const stairwell = {
   type: TYPES.STAIRWELL,
   image: `${IMAGE_PATH}/stairwell.gif`,
 };
+
+const preloadImages = () => {
+  const images = [
+    `${IMAGE_PATH}/stairwell.gif`,
+    `${IMAGE_PATH}/wall1.gif`,
+    `${IMAGE_PATH}/wall2.gif`,
+    `${IMAGE_PATH}/wall3.gif`,
+    `${IMAGE_PATH}/consumable/health_potion.gif`,
+    `${IMAGE_PATH}/tombstone.gif`,
+    `${IMAGE_PATH}/stairwell.gif`,
+    `${IMAGE_PATH}/weapon/dagger.gif`,
+    `${IMAGE_PATH}/weapon/epic_double-axe.gif`,
+    `${IMAGE_PATH}/weapon/hammer.gif`,
+    `${IMAGE_PATH}/weapon/wooden_sword.gif`,
+    `${IMAGE_PATH}/shield/epic_shield.gif`,
+    `${IMAGE_PATH}/shield/large_shield.gif`,
+    `${IMAGE_PATH}/shield/small_shield.gif`,
+    `${IMAGE_PATH}/monster/crazed_devil_bat.gif`,
+    `${IMAGE_PATH}/monster/evil_elf.gif`,
+    `${IMAGE_PATH}/monster/grimer.gif`,
+    `${IMAGE_PATH}/monster/mini_grim.gif`,
+    `${IMAGE_PATH}/monster/vampire_bat.gif`,
+    `${IMAGE_PATH}/hero/hero1-DOWN.gif`,
+    `${IMAGE_PATH}/hero/hero1-LEFT.gif`,
+    `${IMAGE_PATH}/hero/hero1-RIGHT.gif`,
+    `${IMAGE_PATH}/hero/hero1-UP.gif`,
+    `${IMAGE_PATH}/boss/giant_fish.gif`,
+    `${IMAGE_PATH}/boss/giant_phoenix.gif`,
+    `${IMAGE_PATH}/boss/giant_snake.gif`,
+  ];
+
+  images.forEach((image) => {
+    const img = new Image();
+    img.src = image;
+  });
+};
+
+preloadImages();
