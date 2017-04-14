@@ -1,6 +1,5 @@
-
-
 import React, { Component } from 'react';
+
 import './App.css';
 import Map from './Game/Map';
 import HUD from './Game/HUD';
@@ -9,7 +8,6 @@ import { floor,
   stairwell,
   GAME_STATE_PLAYING,
   GAME_STATE_START_MENU,
-  GAME_STATE_START_MENU_TRANSITION,
   GAME_STATE_WIN,
   GAME_STATE_DEATH,
   CONTAINER_WIDTH,
@@ -141,9 +139,9 @@ class App extends Component {
 
   getStartMenuHeight() {
     if (this.state.gameState === GAME_STATE_START_MENU) {
-      return '100%';
+      return 0;
     }
-    return '0px';
+    return -700;
   }
 
 
@@ -255,7 +253,6 @@ class App extends Component {
 
 
   render() {
-    const startMenuHeight = this.getStartMenuHeight();
     return (
       <div className="App" style={{ position: 'relative' }}>
         <div className="App-header">
@@ -267,16 +264,18 @@ class App extends Component {
           player={this.state.player}
           width={CONTAINER_WIDTH}
           height={CONTAINER_HEIGHT}
+          mapOpacity={1}
         />
         <HUD
           player={this.state.player}
           heroImage={this.state.hudPlayerImage}
           tick={this.tick}
         />
-        {
-          this.state.gameState === GAME_STATE_START_MENU &&
-          <NewGame startGame={this.startGame} height={startMenuHeight} />
-        }
+        <NewGame
+          gameState={this.state.gameState}
+          startGame={this.startGame}
+          top={this.getStartMenuHeight()}
+        />
       </div>
     );
   }

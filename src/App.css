@@ -52,3 +52,16 @@ button:active {
 	position:relative;
 	top:1px;
 }
+
+.menu {
+  top: 0;
+}
+
+.startMenu-leave {
+  opacity: 1;
+}
+
+.startMenu-leave.startMenu-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}

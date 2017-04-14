@@ -3,8 +3,8 @@ import React from 'react';
 import { IMAGE_PATH } from '../../Utility';
 import Button from '../../Utility/Button';
 
-const NewGame = ({ startGame, height }) =>
-  <div className="startMenu" style={{ position: 'absolute', backgroundColor: 'rgb(45, 46, 41)', opacity: 1, top: 0, width: '100%', height }}>
+const NewGame = ({ startGame, top }) =>
+  <div key="menu" className="menu" style={{ position: 'absolute', backgroundColor: 'rgb(45, 46, 41)', top, width: '100%', height: '100%', transition: 'top 0.5s cubic-bezier(1.000, -0.530, 0.405, 1.425)' }}>
     <div style={{ margin: '20px auto', maxWidth: 500 }}>
       <h1>Welcome to Rogue-like Dungeon Crawler</h1>
       <p>Help dominic the barbarian fight his way through 3 levels on dungeons</p>
@@ -16,7 +16,7 @@ const NewGame = ({ startGame, height }) =>
       </p>
       <p>
         There is a Boss monster protecting the entrance to each level,
-         you&#39;ll need to hone your skills before you are able to take them out!
+        you&#39;ll need to hone your skills before you are able to take them out!
       </p>
       <p>Be on the lookout for weapons to help you slay those monsters!</p>
       <br />
@@ -26,7 +26,7 @@ const NewGame = ({ startGame, height }) =>
 
 NewGame.propTypes = {
   startGame: React.PropTypes.func.isRequired,
-  height: React.PropTypes.string.isRequired,
+  top: React.PropTypes.number.isRequired,
 };
 
 export default NewGame;

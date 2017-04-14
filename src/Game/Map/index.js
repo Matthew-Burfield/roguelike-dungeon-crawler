@@ -46,13 +46,13 @@ const getVisibleTiles = (map, height, width, playerY, playerX) => {
 };
 
 
-const Map = ({ map, player, height, width }) => {
+const Map = ({ map, player, height, width, mapOpacity }) => {
   const mapReduce = getVisibleTiles(map, height, width, player.row, player.col);
   let incrementor = 0;
 
 
   return (
-    <div className="gameMap" style={{ margin: 'auto', height: `${height}px`, width: `${width}px` }}>
+    <div className="gameMap" style={{ margin: 'auto', height: `${height}px`, width: `${width}px`, opacity: mapOpacity, transition: 'opacity 0.5s ease-in') }}>
       {map.reduce((result, row, index) => {
         if (index >= mapReduce.startRowIndex && index <= mapReduce.endRowIndex) {
           const opacity = 1 / (Math.abs(index - player.row) || 1);
@@ -96,6 +96,7 @@ Map.propTypes = {
     col: React.PropTypes.number.isRequired,
     getImage: React.PropTypes.func.isRequired,
   }).isRequired,
+  mapOpacity: React.PropTypes.number.isRequired,
 };
 
 
