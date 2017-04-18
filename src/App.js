@@ -23,7 +23,6 @@ import getNewPlayer from './Utility/player';
 import NewGameScreen from './Game/Models/NewGame';
 import DeathScreen from './Game/Models/Death';
 
-
 /**
  * Helper function to update the hero position and action any
  * consumable items if the new tile has any
